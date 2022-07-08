@@ -1,0 +1,2396 @@
+<!--$sitebuilder version="2.9.0" extra="Java(1.8.0_231)" md5="58227db99c3a8f4ebd4480726328f28f"$-->
+<!--$templateKey undetermined$-->
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>nmp</title>
+
+
+
+  <style type="text/css">
+   
+    BODY {
+      font-family: "Helvetica";
+      font-size: 16;
+      margin: 0px;
+      padding: 0px;
+    }
+#gradient{
+  position: absolute;
+  top: 60px;
+  left:0;
+  height: 100px;
+  width: 2500px;
+  overflow: hidden;
+  z-index: -200;
+  border-top: 3px solid black;
+  background-image: linear-gradient(orange 10%, 30%, white 90%);
+
+}
+.kader{
+  border: 2px solid black;
+}
+.kaderrang{
+  border: 2px solid orange;
+}
+    .noscroll {
+      overflow: hidden;
+    }
+
+    #root.popped {
+      filter: blur(5px);
+    }
+
+    P {
+      font-family: "Helvetica";
+      font-size: 16;
+    }
+
+    FORM {
+      margin: 0;
+      padding: 0;
+      display: none;
+    }
+    -->
+    .img-zoom-container
+    {
+    position:
+    relative;
+    }
+    .img-zoom-lens
+    {
+    position:
+    absolute;
+    brder:
+    1px
+    solid
+    #d4d4d4;
+    /*set
+    the
+    size
+    of
+    the
+    lens:*/
+    width:
+    40px;
+    height:
+    40px;
+    }
+    .img-zoom-result,
+    .overframe
+    {
+    position:
+    fixed;
+    bottom:
+    10px;
+    right:
+    10px;
+    width:
+    285px;
+    height:
+    285px;
+    }
+    #overframe {
+    z-index:
+    2000;
+    }
+    a {
+    text-decoration:
+    none;
+    }
+    a
+    span {
+    pointer-events:none;
+    }
+    .popup
+    {
+    width:
+    80%;
+    height:
+    80%;
+    position:
+    fixed;
+    left:
+    0;
+    top:0;
+    bottom:0;
+    display:
+    none;
+    right:
+    0;
+    margin:
+    auto;
+    padding:
+    2rem;
+    z-index:2000;
+    border:3px
+    solid
+    black;
+    background-image:url('tegels/bg4.jpg');
+    background-repeat:repeat;
+    background-size:120px;
+    overflow-y:scroll;
+    overflow-x:hidden;
+    }
+    .nl,
+    .fr {
+    display:none;
+    }
+    .eng {
+      display: block;
+    }
+    #nl-link,
+    #eng-link,
+    #fr-link {
+    margin-right:15px;
+    cursor:pointer;
+    }
+    .show {
+    display:block;
+    }
+    .hide {
+      display: none;
+    }
+    .close
+    {
+    position:
+    absolute;
+    right:1.5rem;
+    font-size:
+    3rem;
+    cursor:pointer;
+    }
+    .popup
+    p
+    {
+    font-size:
+    1.2rem;
+    color:blue;
+    }
+    .y22 {
+      display: block;
+    }
+    .y21,
+    .y20,
+    .y19 {
+    display:none;
+    }
+    .programheader {
+    margin-bottom:
+    10px;
+    }
+    #program {
+    background-color:blue;
+    padding:15px;
+    z-index:
+    2000;
+    border:
+    3px
+    solid
+    black;
+    }
+    .y22,
+    .y21,
+    .y20,
+    .y19 {
+    white-space:
+    pre-wrap;
+    word-wrap:
+    word-break
+     !important;
+    word-break:break-word !important;
+    width:260px;
+    font-size:
+    0.8rem;
+    }
+    .y22
+    span {
+      word-break: break-all !important;
+    }
+    .text {
+      word-wrap: word-break;
+    Word-break:break-word;
+    text-transform:lowercase;
+    font-size:14px;
+    font-style:
+    italic;
+    font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+    text-align:
+    center;
+    }
+    .aboutknop:hover {
+    Background-color:yellow;
+    cursor:pointer;
+    }
+    img {
+      z-index:
+    -10;
+    }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <script>
+    function imageZoom(img, resultID) {
+      var img, lens, result, cx, cy;
+
+      result = document.getElementById(resultID);
+      /*create lens:*/
+      lens = document.createElement("DIV");
+      lens.setAttribute("class", "img-zoom-lens");
+      /*insert lens:*/
+      img.parentElement.insertBefore(lens, img);
+      /*calculate the ratio between result DIV and lens:*/
+      cx = result.offsetWidth / lens.offsetWidth;
+      cy = result.offsetHeight / lens.offsetHeight;
+      /*set background properties for the result DIV:*/
+      result.style.backgroundImage = "url('" + img.src + "')";
+      result.style.backgroundSize = (img.width * cx) + "px " + (img.height * cy) + "px";
+      /*execute a function when someone moves the cursor over the image, or the lens:*/
+      lens.addEventListener("mousemove", moveLens);
+      img.addEventListener("mousemove", moveLens);
+      /*and also for touch screens:*/
+      lens.addEventListener("touchmove", moveLens);
+      img.addEventListener("touchmove", moveLens);
+      function moveLens(e) {
+        var pos, x, y;
+        /*prevent any other actions that may occur when moving over the image:*/
+        e.preventDefault();
+        /*get the cursor's x and y positions:*/
+        pos = getCursorPos(e);
+        /*calculate the position of the lens:*/
+        x = pos.x - (lens.offsetWidth / 2);
+        y = pos.y - (lens.offsetHeight / 2);
+        /*prevent the lens from being positioned outside the image:*/
+        if (x > img.width - lens.offsetWidth) { x = img.width - lens.offsetWidth; }
+        if (x < 0) { x = 0; }
+        if (y > img.height - lens.offsetHeight) { y = img.height - lens.offsetHeight; }
+        if (y < 0) { y = 0; }
+        /*set the position of the lens:*/
+        lens.style.left = x + "px";
+        lens.style.top = y + "px";
+        /*display what the lens "sees":*/
+        result.style.backgroundPosition = "-" + (x * cx) + "px -" + (y * cy) + "px";
+      }
+      function getCursorPos(e) {
+        var a, x = 0, y = 0;
+        e = e || window.event;
+        /*get the x and y positions of the image:*/
+        a = img.getBoundingClientRect();
+        /*calculate the cursor's x and y coordinates, relative to the image:*/
+        x = e.pageX - a.left;
+        y = e.pageY - a.top;
+        /*consider any page scrolling:*/
+        x = x - window.pageXOffset;
+        y = y - window.pageYOffset;
+        return { x: x, y: y };
+      }
+    }
+  </script>
+</head>
+
+<body text="#000000" link="#0000CC" vlink="#0000FF" topmargin="0" leftmargin="0">
+
+  <div class="popup"><span class="close"><img src="tegels/homeicon.png" width="50"></a></span>
+    <a href="javascript:void(0)" id="eng-link"><img src="tegels/ukflag.png" width="50"></a> <a href="javascript:void(0)"
+      id="nl-link"><img src="tegels/nlflag.jpg" width="50"></a>
+
+    <a href="javascript:void(0)" id="fr-link"><img src="tegels/frflag.jpg" width="50"></a>
+    <div class="nl">
+      <p>In Ne mosquito pas komen podiumartiesten vanuit verschillende disciplines samen rond hun gefaalde en
+        niet-gebruikte ideeën. Dit kunnen gesneuvelde scènes zijn, vlak voor de première, ideeën die nooit verder zijn
+        geraakt dan een schets in een notitieboekje, maar ook ongebruikte, vreemde fascinaties die omwille van
+        dramaturgische redenen nooit eerder een plaats vonden in een voorstelling of concept. ‘Deleted scenes’, in de
+        ruime zin van het begrip, uit hun vorige werken vormen het vertrekpunt voor een korte (solo) performance. Daarin
+        voeren ze een negatieve, on(aan)gepaste, ‘tweedehands’ versie van hun artistieke praktijk op aan de hand van een
+        persoonlijke notie van ‘slechte’ smaak. <br><br>
+        Falen wordt binnen de praktijk van NMP breed benaderd en kent verschillende gedaantes. Van het scheuren van je
+        broek tijdens een grand écart in een operavoorstelling tot het dromen van een succesvolle danscarrière in Europa
+        en de moeilijke zoektocht naar een werkvisum. Van clowneske artistieke accidenten die steeds erger worden tot
+        persoonlijke socio-economische worstelingen. De verschillende solo’s tonen zowel een realiteit vóór als achter
+        de schermen: de kwetsbaarheid van een performer op scène alsook het falen tijdens repetities (bv. wanneer je een
+        bepaalde scène nog niet onder de knie hebt). <br><br>
+        Met NMP transformeren we dit falen tot brandstof voor creatie. De slechte ideeën en obstakels worden niet langer
+        vermeden maar vormen een uitnodiging om artistieke vooroordelen en standaarden te bevragen die beslissen over
+        wat faalt en wat niet. Welke soort schuld schuilt er in ‘guilty pleasures’? Welke normen vormen zich onbewust
+        rond onze artistieke praktijk en wat gebeurt er als we deze maatstaf links laten liggen? Wat als we problemen
+        niet proberen wegmoffelen maar ze acuut reanimeren om ook een licht te werpen op de onderliggende
+        machtsstructuren die ze mee produceren? <br><br>
+        Artiesten zoeken in NMP naar negatieve versies van hun artistieke praktijken. Zo maken ze onaffe ideeën op een
+        theatrale en verbeeldingsrijke manier nog onaffer. Om het met de woorden van Queer-icoon Quentin Crisp uit te
+        drukken: “If at first you don’t succeed, failure may be your style”. Falen wordt hier gebruikt als een attitude
+        om vanuit te creëren. Op deze manier geldt NMP als evenement ook als een oproep tot reflectie op hoe artistiek
+        werk vandaag wordt geproduceerd binnen een samenleving die competitie als de belangrijkste sociale norm oplegt
+        en gedreven wordt door een onophoudelijk streven naar profijt en succes in de vorm van zelfoptimalisatie,
+        meestal ten koste van anderen.
+      </p>
+      <br>
+      <br> 
+      <br>
+      <p>Credits: Research: Simon Van Schuylenbergh, Nathan Ooms, Anna Franziska Jäger/ Participating chain of artists : Micha Goldberg, Sophia Rodriguez, Benjamin Abel Meirhaeghe, Chiara Monteverde, Pierre Patrice Kasses, Stef Meul, Sophie Melis, Alina Arshi, Anne-Charlotte Bisoux, Bjorn Floréal, Luis Ramirez Muñoz, Sophia Bauer, Nona Buhrs, Nathan Ooms, Marivi Gazeta, Anna Franziska Jäger, Castélie Yalombo, Ivan Lucadamo, Giulia Piana, Simon Van Schuylenbergh, Hanako Hayakawa, Simon Baetens, Willem De Wolf, Sofia Danae Vorvila, Musia Mwankumi, Jacopo Buccino, Dahlia Pessemiers, Jonathan Franz, Désirée 0100, Loucka Elie Fiagan, Dolores Hulan, Natacha Nicora, Rosie Sommers, Elke Van Campenhout, Philippe Beloul, Sarah Bekambo, Kosi Hidama, Charlotte Nagel, Victor Dumont, Yasmi Youb, Désirée Cerocien, Lydia Mcglinchey, Milka Kongi, Eli steffen, Ariadna Rubio, Xenia Perek. (to be continued)
+        <br>Lichtontwerp: Max Adams
+        <br>Setting: Veronika Bez & friends, Bart Van Schuylenbergh, Simon Van Schuylenbergh
+        <br>Flyer: Maya Strobbe Website: Stijn Van Renterghem, Deveny Faruque, Maya Strobbe
+        <br>Production support: Kunstenwerkplaats KWP
+        <br>Steun: Volksroom ism VGC, Vlaamse Overheid, Kunstenwerkplaats, artist Commons, Brasserie Atlas, De Koer, CAMPO, Troon, decoratelier, Cultureghem, Cinoco, De Singel, Het Bos, BUDA, de t h e a t e r m a k e r , WPzimmer, de school van gaasbeek, SB34, Atelier Mommen, atelier 210, Batard, La Balsamine, GC Platoo.
+        </p>
+    </div>
+    <div class="eng">
+      <p class="p1"><span class="s1">In Ne mosquito pas performing artists from different disciplines come together to
+          perform their 'failed' work. These can be scenes that were cut out of a show right before the curtain went up,
+          ideas that never escaped the pages of one’s notebook or lingering fascinations from the past that for one
+          reason or another never got expressed. The participating artists are invited to dive into their notebooks from
+          recent or not so recent creative processes, their archive of rehearsal videos, their (often unreliable) memory
+          of projects they were involved in, etcetera. These function as a starting point or breeding ground for a short
+          solo performance that renders the failure within one’s artistic practice visible. </span></p>
+      
+      <p class="p1"><span class="s1">Failure here must be understood broadly. It is ripping your pants while doing a
+          grand écart during a performance in the Opera, but is also coming to Europe with the American Dream of a
+          successful career in contemporary dance, only to realize years later that “America is actually in America”.
+          The failure rendered visible in the Ne mosquito pas-solos is of different sorts. It could be slapsticky but
+          might just as well have a strong socio-economical dimension. The solo’s deal with experiences that took place
+          both on stage and backstage: addressing the failure that is inherently part of performing but also bringing
+          out of the shadows different forms of failure that often remain invisible for the spectator. </span></p>
+      
+      <p class="p1"><span class="s1">Ne mosquito pas aims to transform this failure and loss into elements that are no
+          longer considered obstacles but rather a possible source for creation, fuel for creativity. They are no longer
+          to be hidden or avoided, they are reformulated as an invitation to question the standard which decides what is
+          considered failed or successful. What norms are consciously or unconsciously part of one’s artistic decision
+          making, and what happens if this norm is left aside? Some sort of negative version of one’s practice emerges,
+          by assuming the potential of what one would ‘normally’ consider not being part of one’s taste and interests.
+          In extremis this means looking for one’s bad taste but instead of staying away from it, making it even worse.
+          In the line of queer icon Quentin Crisp’s motto “If at first you don’t succeed, failure might be your style”,
+          failure is adopted as a possible attitude to think and create through. In that way it attempts to open space
+          for reflection on the specific conditions in which artistic work is being produced, and more generally a
+          society that promotes competition as one of it’s main forms of social relationships, is characterized by a
+          need for constant self-enhancement of it’s subjects and driven by a never ending desire for success and profit
+          (usually at the cost of others). </span></p>
+      
+      <p class="p1"><span class="s1">The artists that participate in Ne mosquito pas are invited to interpret the notion
+          of failure from their personal perspective. The collection of the different performances that emerges is often
+          eclectic but characterized by a collective effort to undo a preconfigured idea about what ‘works’ on stage and
+          what does not. It are autonomous contributions, but it is in relation to each other that the solo’s offer a
+          glimpse of failure’s potential to resist the constant quest for succes as the default mode by which neoliberal
+          lives are lived. </span></p>
+      
+      <p class="p3"><span class="s1">Credits: Research: Simon Van Schuylenbergh, Nathan Ooms, Anna Franziska Jäger/
+          Participating chain of artists : Micha Goldberg, Sophia Rodriguez, Benjamin Abel Meirhaeghe, Chiara
+          Monteverde, Pierre Patrice Kasses, Stef Meul, Sophie Melis, Alina Arshi, Anne&#8209;Charlotte Bisoux, Bjorn
+          Floréal, Luis Ramirez Muñoz, Sophia Bauer, Nona Buhrs, Nathan Ooms, Marivi Gazeta, Anna Franziska Jäger,
+          Castélie Yalombo, Ivan Lucadamo, Giulia Piana, Simon Van Schuylenbergh, Hanako Hayakawa, Simon Baetens, Willem
+          De Wolf, Sofia Danae Vorvila, Musia Mwankumi, Jacopo Buccino, Dahlia Pessemiers, Jonathan Franz, Désirée 0100,
+          Loucka Elie Fiagan, Dolores Hulan, Natacha Nicora, Rosie Sommers, Elke Van Campenhout, Philippe Beloul, Sarah
+          Bekambo, Kosi Hidama, Charlotte Nagel, Victor Dumont, Yasmi Youb, Désirée Cerocien, Lydia Mcglinchey, Milka
+          Kongi, Eli steffen, Ariadna Rubio, Xenia Perek. (to be continued)</span></p>
+      <p class="p3"><span class="s1">Light desing: Max Adams</span></p>
+      <p class="p3"><span class="s1">Setting: Veronika Bez &amp; friends, Bart Van Schuylenbergh, Simon Van
+          Schuylenbergh</span></p>
+      <p class="p3"><span class="s1">Flyer: Maya Strobbe Website: Stijn Van Renterghem, Deveny Faruque, Maya
+          Strobbe</span></p>
+      <p class="p3"><span class="s1">Production support: Kunstenwerkplaats KWP</span></p>
+      <p class="p3"><span class="s1">Thanks to: Volksroom ism VGC, Vlaamse Overheid, Kunstenwerkplaats, artist Commons,
+          Brasserie Atlas, De Koer, CAMPO, Troon, decoratelier, Cultureghem, Cinoco, De Singel, Het Bos, BUDA, de t h e
+          a t e r m a k e r , WPzimmer, de school van gaasbeek, SB34, Atelier Mommen, atelier 210, Batard, La Balsamine,
+          GC Platoo.</span></p>
+    </div>
+
+    <div class="fr">
+      <p>Dans le projet Ne mosquito pas, des artistes venant de la scène des arts vivants et de différentes communautés
+        artistiques se réunissent autour de l’idée de l'échec. Ce sont des scènes supprimées juste avant la première,
+        des idées qui n’ont jamais été développées plus loin que dans un carnet de notes, mais aussi les idées jamais
+        réalisées, les fascinations étranges qui sont restées à l’état brut pour des raisons dramaturgiques. Les “scènes
+        supprimées” des travaux artistiques précédents, forment, dans un sens plus large, le point de départ de ces
+        courtes (solos) performances. Les artistes y présentent leur version “négative”, de “deuxième main” de leur
+        pratique artistique, fondée sur une note de “mauvais goût”.<br><br>
+        Dans la pratique du NMP l’échec est abordé de différentes manières. Que ce soit le fait de déchirer son pantalon
+        lors d’un grand écart pendant la présentation d’un opéra, ou bien le rêve difficile d’une carrière de danse en
+        Europe jusqu’à la recherche d’un visa de travail. Des accidents clownesques qui ne cesseront de s’aggraver
+        jusqu’aux conflits personnels socio-économique. Les différents solos montrent aussi bien une réalité avant et
+        arrière-scène; la fragilité d’un/e performeur/se sur scène que l’échec pendant les répétitions. <br><br>
+        Avec NMP nous transformons cet échec en carburant artistique pour la création. Les “mauvaises” idées ne sont
+        plus des obstacles mais deviennent une invitation à interroger nos préjugés et standards artistiques, en
+        considérant ce qui est bon ou mauvais. Que se passe-t-il si nous réussissons à ne pas cacher les problèmes mais
+        à les réanimer en faisant ressortir les structures sous-jacentes qui les produisent?<br><br>
+        Les artistes recherchent la version négative de leur pratique artistique. De leurs idées inachevées ils les
+        transforment en matière théâtrale encore moins achevées. En répétant les mots de l’icône-Queer Quentin Crisp “If
+        at first you don’t succeed, failure may be your style”. L’échec est vu ici comme une attitude de création. De
+        cette manière NMP est un appel à la réflexion sur la façon dont le travail artistique est produit dans une
+        société qui impose la compétition comme norme socio(-économique) principale, poussée par une lutte continuelle
+        vers le succès, généralement aux dépens des autres.<br><br>
+        L’assemblage des performances est souvent éclectique, en exprimant un désir collectif de désamorcer une idée
+        préconçue de ce “qui fonctionne” sur scène. En relation les unes avec les autres, elles laissent entrevoir le
+        potentiel de l’échec.<br><br>
+        NMP constate que la possibilité d’une certaine spécialisation et focus est souvent lié aujourd’hui à l’accès à
+        certaines ressources, temps et espace- exactement ce qui manque à tant d’artistes. NMP s’inscrit en réaction à
+        cette problématique, comme un désir de créer une intimité entre les artistes via l’artistique et l’expérimental.
+
+      </p>
+      <br>
+      <br> 
+      <p>Credits: Research: Simon Van Schuylenbergh, Nathan Ooms, Anna Franziska Jäger/ Participating chain of artists : Micha Goldberg, Sophia Rodriguez, Benjamin Abel Meirhaeghe, Chiara Monteverde, Pierre Patrice Kasses, Stef Meul, Sophie Melis, Alina Arshi, Anne-Charlotte Bisoux, Bjorn Floréal, Luis Ramirez Muñoz, Sophia Bauer, Nona Buhrs, Nathan Ooms, Marivi Gazeta, Anna Franziska Jäger, Castélie Yalombo, Ivan Lucadamo, Giulia Piana, Simon Van Schuylenbergh, Hanako Hayakawa, Simon Baetens, Willem De Wolf, Sofia Danae Vorvila, Musia Mwankumi, Jacopo Buccino, Dahlia Pessemiers, Jonathan Franz, Désirée 0100, Loucka Elie Fiagan, Dolores Hulan, Natacha Nicora, Rosie Sommers, Elke Van Campenhout, Philippe Beloul, Sarah Bekambo, Kosi Hidama, Charlotte Nagel, Victor Dumont, Yasmi Youb, Désirée Cerocien, Lydia Mcglinchey, Milka Kongi, Eli steffen, Ariadna Rubio, Xenia Perek. (to be continued)
+        <br>Lichtontwerp: Max Adams
+        <br>Setting: Veronika Bez & friends, Bart Van Schuylenbergh, Simon Van Schuylenbergh
+        <br>Flyer: Maya Strobbe Website: Stijn Van Renterghem, Deveny Faruque, Maya Strobbe
+        <br>Production support: Kunstenwerkplaats KWP
+        <br>Steun: Volksroom ism VGC, Vlaamse Overheid, Kunstenwerkplaats, artist Commons, Brasserie Atlas, De Koer, CAMPO, Troon, decoratelier, Cultureghem, Cinoco, De Singel, Het Bos, BUDA, de t h e a t e r m a k e r , WPzimmer, de school van gaasbeek, SB34, Atelier Mommen, atelier 210, Batard, La Balsamine, GC Platoo.
+        </p>
+    </div>
+
+  </div>
+  <div id="gradient"></div>
+  <div id="root" style="position:absolute;left:200;width:2065px;height:2287px;">
+
+
+    <div id="e2" style="color:limegreen;position:absolute;left:1050;top:447;width:auto;height:18;"><span class="text">
+        <span>Speaking from the guts</span></span> </div>
+    <div id="e3" style="position:absolute;left:146;top:8;width:359;height:45;">
+      <table border="0" cellspacing="0" cellpadding="0" width="359">
+        <tr>
+          <td nowrap height="45" align="center"><span class="text">
+              <font color="darkblue" size="5"><span style="font-size:24px;line-height:29px;">www.</span>
+
+                <font color="blue" size="6"><span style="font-size:36px;line-height:43px;text-transform: uppercase;">NE
+                    MOSQUITO PAS</span>
+
+
+                  <font color="darkblue" size="5"><span style="font-size:24px;line-height:29px;">.be</span>
+
+            </span></td>
+        </tr>
+      </table>
+    </div>
+    <div id="popup" style="color:blue;position:absolute;left:616;top:73;width:auto;height:auto;"><span class="text">
+        <span class="aboutknop"
+          style="text-transform:uppercase;text-decoration:underline;font-size:25px;line-height:15px;">ABOUT US</span>
+
+      </span> </div>
+
+
+  
+    <div id="e11" style="position:absolute;left:647;top:829;width:1;height:109;"><img
+        src="images/aboutme_classic_vertline.gif" width="1" height="109" alt=""></div>
+
+    <div id="e13" style="position:absolute;left:812;top:114;width:5;height:1933;"><img
+        src="images/aboutme_classic_vertline.gif" width="5" height="1933" alt=""></div>
+    <div id="e14" style="position:absolute;left:643;top:113;width:5;height:1935;"><img
+        src="images/aboutme_classic_vertline.gif" width="5" height="1935" alt=""></div>
+    <div id="e15" style="position:absolute;left:644;top:112;width:173;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="173" height="3" alt=""></div>
+
+
+    <div id="e18" style="position:absolute;left:177;top:46;width:auto;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="393" height="3" alt=""></div>
+    <div id="e19" style="color:red;position:absolute;left:910;top:2065;width:64;height:auto;"><span class="text">
+
+        <span>The use of too much dick or boobs</span>
+        </a>
+      </span> </div>
+
+    <div id="e23" style="position:absolute;left:123;top:394;width:4;height:132;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="132" alt=""></div>
+    <div id="e24" style="position:absolute;left:12;top:90;width:107;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="107" height="3" alt=""></div>
+    <div id="e25" style="position:absolute;left:12;top:91;width:3;height:734;"><img
+        src="images/aboutme_classic_vertline.gif" width="3" height="734" alt=""></div>
+
+    <div id="e27" style="position:absolute;left:1090;top:2094;width:auto;height:auto;"><a><img class="bld"
+          src="cre/jahaha64.jpg" width="322" height="90" border="0" alt=""></a></div>
+
+    <div id="e29" style="position:absolute;left:418;top:828;width:3;height:147;"><img
+        src="images/aboutme_classic_vertline.gif" width="3" height="147" alt=""></div>
+    <div id="program" style="position:absolute;left:-185;top:20;width:260;height:100%;">
+      <div border="0" cellspacing="0" cellpadding="0" width="304">
+
+        <div class="programheader">
+          <span>PROGRAM</span>
+          <a href="javascript:void(0)" id="22-link">2022</a>/
+          <a href="javascript:void(0)" id="21-link">2021</a>/
+          <a href="javascript:void(0)" id="20-link">2020</a>/
+          <a href="javascript:void(0)" id="19-link">2019</a>
+        </div>
+        <div class="y22">8/4/2022
+          Ne mosquito pas 30 <span>(DésiréeGiuliaSimonPhilippeNatacha) </span> Het Bos (Antwerpen)
+          Performing: Désirée Cerocien, Giulia Piana, Simon Van Schuylenbergh, Philippe Beloul, Natacha Nicora
+
+          25/5/2022
+          Ne mosquito pas 31<span>(YasminaMilkaLydiaSimonDésirée) </span>Decoratelier (Molenbeek)
+          Performing: Yasmina Tayoub, Milka Kongi, Lydia Mclingey, Simon Van Schuylenbergh, Désirée 0100
+
+          8/6/2022
+          Ne mosquito pas 32<span>(MichaRosieMilkaCastélieDésirée) </span> Brasserie Atlas (Anderlecht)
+          Performing Micha Goldberg, Rosie Sommers, Milka Kongi, Castélie yalombo, Désirée cerocien)
+
+          15/6/2022
+          Ne mosquito pas 33<span>(JonathanElleDahliaNatahcaLuis) </span>Cultureghem (Anderlecht)
+          Performing: Jonathan Franz, Elle Van Campenhout, Dahlia Pessemiers, Natacha Nicora, Luis Ramirez Munoz
+
+          18/6/2022
+          Ne mosquito pas 34<span>(LydiaSimonVictorStefHanako) </span>L’Accroche (Ixelles)
+          Performing: Lydia Mclingey, Simon Van Schuylenbergh, Victor Dumont, Stef Meul, Hanako Hayakawa
+
+          22/6/2022
+          Ne mosquito pas 35<span>(XeniaSophiaNathanJacopoGiulia) </span>Kunstenwerkplaats pianofabriek (Sint-Gilles)
+          Performing: Xenia Perek, Sophia Rodriguez, Nathan Ooms, Jacopo Buccino and Giulia Piana)
+
+          26/6/2022
+          Ne mosquito pas 36<span>(YasminaCharlotteAnnaFranziskaPhlippeLoucka) </span>Stairs Basiliek (Koekelberg)
+          Performing: Yasmina Tayoub, Charlotte Nagel, Anna Franziska Jäger, Philippe Beloul, Loucka Elie Fiagan
+
+          29/6/2022
+          Ne mosquito pas 37<span>(SimonAnne&#8209;CharlotteChiaraSophieAriadna) </span>Campo (Gent)
+          Performing: Simon Baetens, Anne&#8209;Charlotte Bisoux, Chiara Monteverde, Sophie Melis, Ariadna Lleo Rubio )
+
+          10/9/2022
+          Ne mosquito pas 38 La Vallée (Molenbeek)
+          Artists to be announced
+
+          30/08/2022
+          Ne mosquito pas 39 Les Festival Conservatorium (Antwerpen)
+          Artists to be announced
+
+
+          8/10/2022
+          Ne mosquito pas 40 ihk Radian Nights De Singel (Antwerpen)
+          Artists to be announced
+
+
+          21/10/2022
+          Ne mosquito pas 41 De koer (Gent)
+          Artists to be announced
+
+
+          25/11/2022
+          Ne mosquito pa 42 Next Festival Buda (Kortrijk)
+          Artists to be announced
+        </div>
+        <div class="y21">22/6/2021
+          Ne mosquito pas 16<span>(Anna&#8209;FranziskaSophiaMichaSophieSimon) </span>De Singel (Antwerpen)
+          Performing: Anna Franziska Jäger, Sophia Rodriguez, Micha Goldberg, Sophie Melis,
+          Simon Van Schuylenbergh
+
+          23/6/2021
+          Ne mosquito pas 17<span>(RosieNathanCastélieChiaraBenjamin) </span>De Singel (Antwerpen)
+          Performing: Rosie Sommers, Nathan Ooms, Castélie Yalombo, Chiara Monteverde, Benjamin Abel Meirhaeghe
+
+
+          28/6/2021
+          Ne mosquito pas 18 pt1<span>(WillemRosieNathanSophiaSimon) </span>Wpzimmer (Antwerpen)
+          Performing: Willem De Wolf, Rosie Sommers, Nathan Ooms, Sophia Danae Vorvila en Simon Baetens
+
+
+          3/7/2021
+          Ne mosquito pas 18 pt 2<span>(MichaMusiaJacopoDahliaAnna&#8209;Franziska) </span>Wpzimmer (Antwerpen)
+          Performing: Micha Goldberg, Musia Mwankumi, Jacopo Buccino, Dahlia Pessemiers en Anna Franziska Jäger.
+
+          8/7/2021
+          Ne mosquito pas 19<span>(LouckaCastélieDésiréeSimonJonathan) </span>Troon (Ixelles)
+          Performing: Loucka Elie Fiagan, Castélie Yalombo, Désirée Cerocien, Simon Van Schuylenbergh, Jonathan Franz
+
+          6/8/2021
+          Ne mosquito pas 20<span>(DoloresNatachaMichaSimon) </span>Kunstenwerkplaats Pianofabriek (Sint-Gilles)
+          Performing: Dolores Hulan, Natacha Nicora, Micha Goldberg, Simon Van Schuylenbergh
+
+          11/08/2021
+          Ne mosquito pas 21<span>(DésiréeAnnaFranziskaMichaStefMusia) </span>De Kriekelaar (Schaarbeek)
+          Performing: Désirée Cerocien, Anna&#8209; Franziska Jäger, Micha Goldberg, Stef Meul, Musia Mwankumi
+
+          14/08/2021
+          Ne mosquito pas 22<span>(LuisDésiréeCastélieSimonChiara) </span>Park van Koekelberg ism GC platoo (Koekelberg)
+          Performing: Luis Ramirez Munoz, Désirée Cerocien, Castélie Yalombo, Simon Van Schuylenbergh, Chiara Monteverde
+
+          18/08/2021
+          Ne mosquito pas 23<span>(SophieJacopoMariviAnne&#8209;CharlotteBjorn) </span>Cultureghem/ Abbatoir
+          (Anderlecht)
+          Performing: Sophie Melis, Jacopo Buccino, Marivi Gazetta, Anne&#8209;Charlotte Bisoux, Bjorn Floréal
+
+          25/08/2021
+          Ne mosquito pas 24<span>( SophiaRosieAlinaSophiaLoucka) </span>SWIDR Decoratelier (Moleneek)
+          Performing: Sophia Rodriguez, Rosie Sommers, Alina Arshi, Sopia Danae Vorvilla, Loucka Elie Fiagan)
+
+          28/08/2021
+          Ne mosquito pas 25<span>(GiuliaPepeLuisNatachaSimon) </span>Atelier Mommen (Sint-Joost-Ten-Node)
+          Performing: Giulia Piana, Pierre Patrice Kasses, Luis Ramirez Munoz, Natacha Nicora, Simon Baetens
+
+          1/09/2021
+          Ne mosquito pas 26<span>(DahliaSophiaJonathanDoloresChiara) </span>Artist Commons (Forest)
+          Performing: Dahlia Pessemiers, Sophia Bauer, Jonathan Franz, Dolores Hulan, Chiara Monteverde
+
+          4/09/2021
+          Ne mosquito pas 27<span>(CastélieSimonLouckaJonathanSophia) </span>Buda (Kortrijk)
+          Performing: Castélie Yalombo, Simon Baetens, Loucka Elie Fiagan, Jonathan Franz, Sophia Danae Vorvilla
+
+          29/09/2021
+          Ne mosquito pas 28 pt 1<span>(NathanRosieWillemCastélieNatcha) </span>Campo (Gent)
+          Performing: Nathan Ooms, Rosie Sommers, Willem De Wolf, Castélie Yalombo, Natacha Nicora
+
+          30/09/2021
+          Ne mosquito pas 28 pt 2<span>(SimonMichaSophiaBjornAnna&#8209;Franziska) </span>Campo (Gent)
+          Performing: Simon Van Schuylenbergh, Micha Goldberg, Sophia Rodriguez, Bjorn Floréal, Anna&#8209;Franziska
+          Jäger
+
+          19/11/2021
+          Ne mosquito pas 28,5<span>(AriadnaElieXeniaRosieSimon) </span>Veem house for performance (Amsterdam)
+          Performing: Xenia Perek, Ariadna Rubio Lleo, Eli Steffen, Rosie Sommers, Simon Van Schuylenbergh
+
+          25/11/2021
+          Ne mosquito pas 29<span>(MichaRosiePhilippeElkeSarah) </span>Cinoco (Molenbeek)
+          Performing: Micha Goldberg, Rosie Sommers, Phillipe Beloul, Elke Van Campenhout, Sarah Bekambo
+        </div>
+        <div class="y20">6/07/2020
+          Ne mosquito pas 8<span>(RosieMichaHanakoBenjaminSophia) </span>Artist Commons (Brussels)
+          Performing: Sophia Rodriguez, Rosie Sommers, Micha Goldberg, Hanako Hayakawa, Benjamin Abel Meirhaeghe
+
+          6/8/2020
+          Ne mosquito pas 9 pt 1.<span>(Anne&#8209;CharlotteNathanSimonMichaRosie) </span>Zomer in O. (Oostende)
+          Performing: Anne&#8209;Charlotte Bisoux, Nathan Ooms, Simon Van Schuylenbegrh, Micha Goldberg, Rosie Sommers
+
+          9/8/2020
+          Ne mosquito pas 9 pt 2.<span>(Anna F.SophiaHanakoBenjaminLuis) </span>Zomer in O. (Oostende)
+          Performing: Anna&#8209;Franziska Jäger, Sophia Rodriguez, Hanako Hayakawa, Benjamin Abel Meirhaeghe, Luis
+          Ramirez Muñoz
+
+          18/8/2020
+          Ne mosquito pas 10<span>(PepeChiaraBenjaminBjornNona) </span>GC Kriekelaar & K.A.K. (Schaarbeek)
+          Performing: Pierre Patrice Kassel, Chiara Monteverde, Benjamin Abel Meirhaeghe, Bjorn Floréal, Nona Buhrs
+
+          22/08/2020
+          Ne mosquito pas 11<span>(Anne&#8209;CharlotteRosieSophiaNathanLuis) </span>Atelier Mommen
+          (Sint-Joost-Ten-Node)
+          Performing: Anne&#8209;Charlotte Bisoux, Rosie Sommers, Sophia Rodriguez, Nathan Ooms, Luis Ramirez Muñoz
+
+          26/08/2020
+          Ne mosquito pas 12<span>(AlinaMichaCastélieSimonAnnaFranziska) </span>Cultureghem/Abattoir (Anderlecht)
+          Performing: Alina Arshi, Micha Goldberg, Castélie Yalombo, Simon Van Schuylenbergh, Anna&#8209;Franziska Jäger
+
+          29/08/2020
+          Ne mosquito pas 13<span>(StefAnnaFranziskaNathanSophiaSophia) </span>ObdlO (Schaarbeek)
+          Performing: Stef Meul, Anna&#8209;Franziska JÄger, Nathan Ooms, Sophia Bauer, Sophie Rodriguez
+
+          2/9/2020
+          Ne mosquito pas 14<span>(MichaRosieSophieSimonAnnaFranziska) </span>Decoratelier (Molenbeek)
+          Performing: Micha Goldberg, Rosie Sommers, Sophie Melis, Simon Van Schuylenbergh, Anna&#8209;Franziska Jäger
+
+          10- 11/11/2020 (CANCELED BCS OF CORONA)
+          Ne mosquito pas 15<span>(MichaRosieSophiaBenjaminChiaraSimonCastélieNathanGiuliaSophie)
+            De Singel (Antwerpen)
+            Performing: Micha Goldberg, Sophie Melis, Rosie Sommers, Benjamin Abel Meirhaeghe, Chiara Monteverde, Sophia
+            Rodriguez, Castélie Yalombo, Giulia Piana, Nathan Ooms, Simon Van Schuylenbergh</div>
+        <div class="y19">31/8/2019
+          Ne mosquito pas 1<span>(SimonNathanAnna&#8209;Franziska) </span>- SB34 (Sint-Gillis)
+          Performing: Simon Van Schuylenbergh, Nathan Ooms & Anna&#8209;Franziska JÄger
+
+          7/9/2019
+          Ne mosquito pas 2<span>(SimonNathanAnna&#8209;Franziska - School van Gaasbeek (Gaasbeek)
+            Performing: Simon Van Schuylenbergh, Nathan Ooms & Anna&#8209;Franziska JÄger
+
+            29/9/2019
+            Ne mosquito pas 3<span>(SimonNathanAnna&#8209;Franziska) </span>- In de maak festival ( Leuven)
+            Performing: Simon Van Schuylenbergh, Nathan Ooms & Anna&#8209;Franziska JÄger
+
+            7/10/2019
+            Ne mosquito pas 4<span>(MichaRosieNathanSimonAnna&#8209;Franziska) </span>- Volksroom (Brussel)
+            Performing: Micha Goldberg, Rosie Sommers, Simon Van Schuylenbergh, Nathan Ooms & Anna&#8209;Franziska JÄger
+
+            13/12/2019
+            Ne mosquito pas 5<span>(RahafDaanHannahJulianMiroElifManonGerremechMaryamEmmaTuurLouisSimon)
+              De Koer ism Kunstinstituut (Gent)
+              Performing: Rahaf Alobeid, Daan Bellemans, Hannah Billiet, Julian Dewaele, Miro Lievens, Elif Murat, Manon
+              Poelman, Geremech Pottie, Maryam Sserwamukoko, Emma Van Acker, Tuur Van Boxem, Louis Witdouck en Simon Van
+              Schuylenbergh
+
+              22/12/2019
+              Ne mosquito pas 6<span>(ChiaraSimonRosieMichaSophieAlinaIvan) </span>Volksroom (Brussel)
+              Performing: Chiara Monteverde, Simon Van SChuylenbergh, Rosie Sommers, Micha Goldberg, Sophie Melis, Alina
+              Arshi, Ivan Lucadamo, installation: Maya Strobbe
+
+              23/12/2019
+              Ne mosquito pas 7
+              (MariviPepeNathanAnna&#8209;FranziskaStefGiuliaAnne&#8209;CharlotteBjorn) </span>Volksroom (Brussel)
+            Performing: Marivi Gazetta, Pierre Patrice Kasses, Anna&#8209;Franziska Jäger, Stef Meul, Giulia Piana,
+            Anne&#8209;Charlotte Bisoux, Bjorn Floréal, installation: Maya Strobbe
+        </div>
+
+      </div>
+    </div>
+    <div id="e31" style="position:absolute;left:1367;top:1641;width:auto;height:auto;"><a>
+        <img class="bld" src="cre/kak3
+.png" width="145" height="84" border="0" alt="">
+      </a></div>
+
+    <div id="e33" style="position:absolute;left:123;top:393;width:158;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="158" height="3" alt=""></div>
+    <div id="e34" style="position:absolute;left:1087;top:12;width:65;height:66;"><a>
+        <img class="bld" src="cre/jahaha22.jpg" width="65" height="66" border="0" alt="">
+      </a></div>
+    <div id="e35" style="position:absolute;left:989;top:13;width:93;height:75;"><a>
+        <img class="bld" src="cre/kak4.png" width="93" height="75" border="0" alt="">
+      </a></div>
+    <div id="e37" style="position:absolute;left:1475;top:682;width:145;height:145;"><a>
+        <img class="bld" src="cre/kak5
+.png" width="145" height="145" border="0" alt="">
+      </a></div>
+    <div id="e38" style="position:absolute;left:912;top:14;width:72;height:52;"><a>
+        <img class="bld" src="cre/kak6
+.png" width="72" height="52" border="0" alt="">
+      </a></div>
+
+    <div id="e40" style="position:absolute;left:1236;top:1407;width:103;height:108;"><a>
+        <img class="bld" src="cre/jahaha23.jpg" width="103" height="108" border="0" alt="">
+      </a></div>
+    <div id="e42" style="position:absolute;left:393;top:1334;width:2;height:143;"><img
+        src="images/aboutme_classic_vertline.gif" width="2" height="143" alt=""></div>
+    <div id="e43" style="color:red;position:absolute;left:873;top:58;width:100;height:auto;"><span class="text"><a>
+          <span>pooping on stage<br soft></span>
+        </a></span> </div>
+    <div id="e44" style="position:absolute;left:399;top:1358;width:130;height:107;"><a>
+        <img class="bld" src="cre/jahaha65.jpg" width="130" height="107" border="0" alt="">
+      </a></div>
+
+    <div id="e46" style="position:absolute;left:118;top:1482;width:auto;height:auto;"><a>
+        <img class="bld" src="cre/kak7.png" width="197" height="135" border="0" alt="">
+      </a></div>
+    <div id="e47" style="position:absolute;left:12;top:822;width:107;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="107" height="3" alt=""></div>
+
+
+
+    <div id="e51" style="position:absolute;left:1241;top:9;width:84;height:63;"><a>
+        <img class="bld" src="cre/kak9.png" width="84" height="63" border="0" alt="">
+      </a></div>
+    <div id="e52" style="color:red;position:absolute;left:1285;top:599;width:142;height:59;"><span class="text">
+        <span>loud music and not listening to the actor</span>
+
+
+      </span> </div>
+    <div id="e53" style="position:absolute;left:218;top:1334;width:2;height:143;"><img
+        src="images/aboutme_classic_vertline.gif" width="2" height="143" alt=""></div>
+
+
+    <div id="e56" style="position:absolute;left:1543;top:1427;width:126;height:98;"><a>
+        <img class="bld" src="cre/kak10
+.png" width="126" height="98" border="0" alt="">
+      </a></div>
+    <div id="e57" class="kader" style="position:absolute;left:1547;top:1533;width:auto;height:auto;"><a>
+        <img class="bld" src="cre/kak11
+.png" width="118" height="113" border="0" alt="">
+      </a></div>
+    <div id="e58" class="kader" style="position:absolute;left:9;top:1146;width:91;height:129;"><a>
+        <img class="bld" src="cre/jahaha1.jpg" width="91" height="129" border="0" alt="">
+      </a></div>
+
+    <div id="e60" style="position:absolute;left:9;top:827;width:3;height:148;"><img
+        src="images/aboutme_classic_vertline.gif" width="3" height="148" alt=""></div>
+    <div id="e61" style="position:absolute;left:315;top:1899;width:110;height:110;"><a>
+        <img class="bld" src="cre/kak12
+.png" width="110" height="110" border="0" alt="">
+      </a></div>
+
+    <div id="e63" style="position:absolute;left:1821;top:79;width:200;height:198;"><a><img class="bld"
+          src="cre/jahaha65.jpg" width="200" height="198" border="0" alt=""></a>
+    </div>
+    <div id="e65" style="position:absolute;left:10;top:827;width:629;height:2;"><img
+        src="images/aboutme_classic_horzline.gif" width="629" height="2" alt=""></div>
+    <div id="e66" style="position:absolute;left:312;top:828;width:3;height:146;"><img
+        src="images/aboutme_classic_vertline.gif" width="3" height="146" alt=""></div>
+  
+    <div id="e68" style="position:absolute;left:220;top:1334;width:175;height:2;"><img
+        src="images/aboutme_classic_horzline.gif" width="175" height="2" alt=""></div>
+    <div id="e69" style="position:absolute;left:218;top:1475;width:176;height:2;"><img
+        src="images/aboutme_classic_horzline.gif" width="176" height="2" alt=""></div>
+    <div id="e70" style="position:absolute;left:820;top:1032;width:auto;height:auto;"><a>
+
+        <img src="cre/kak13.png" width="179" height="140" border="0" alt="">
+      </a></div>
+    <div id="e71" style="position:absolute;left:9;top:982;width:633;height:2;"><img
+        src="images/aboutme_classic_horzline.gif" width="633" height="2" alt=""></div>
+    <div id="e72" style="position:absolute;left:9;top:984;width:3;height:170;"><img
+        src="images/aboutme_classic_vertline.gif" width="3" height="170" alt=""></div>
+    <div id="e73" style="position:absolute;left:9;top:974;width:630;height:2;"><img
+        src="images/aboutme_classic_horzline.gif" width="630" height="2" alt=""></div>
+    <div id="e74" style="position:absolute;left:1029;top:1380;width:auto;height:auto;"><a>
+
+        <img src="
+
+        cre/kak14
+.png" width="185" height="185" border="0" alt="">
+      </a></div>
+    <div id="e75" style="position:absolute;left:222;top:1337;width:170;height:137;"><a>
+
+        <img class="bld" src="cre/jahaha3.jpg" width="170" height="137" border="0" alt="">
+      </a></div>
+
+    <div id="e78" style="position:absolute;left:638;top:827;width:3;height:149;"><img
+        src="images/aboutme_classic_vertline.gif" width="3" height="149" alt=""></div>
+    <div id="e79" style="position:absolute;left:639;top:983;width:3;height:171;"><img
+        src="images/aboutme_classic_vertline.gif" width="3" height="171" alt=""></div>
+    <div id="e80" style="position:absolute;left:644;top:2044;width:173;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="173" height="4" alt=""></div>
+
+    <div id="e82" style="position:absolute;left:2136;top:19;width:79;height:79;"><a>
+        <img class="bld" src="cre/kak15
+.png" width="79" height="79" border="0" alt="">
+      </a></div>
+    <div id="e83" style="position:absolute;left:2045;top:12;width:90;height:45;"><a><img class="bld"
+          src="cre/jahaha66.jpg" width="90" height="45" border="0" alt=""></a></div>
+    <div id="e84" style="position:absolute;left:1935;top:11;width:70;height:93;"><a>
+        <img class="bld" src="cre/kak16
+.png" width="70" height="93" border="0" alt="">
+      </a></div>
+    <div id="e85" style="position:absolute;left:1510;top:1903;width:120;height:57;color: red;"><span class="text"><a>
+          <span>overacting<br></span>
+        </a><a>
+          <span>of sadness<br></span>
+        </a><a>
+          <span>and anger</span>
+        </a></span> </div>
+
+    <div id="e88" class="kader" style="position:absolute;left:537;top:92;width:69;height:69;"><a><img class="bld"
+          src="cre/jahaha68.jpg" width="69" height="69" border="0" alt=""></a></div>
+    <div id="e89" class="kader" style="position:absolute;left:975;top:2040;width:107;height:107;"><a><img class="bld"
+          src="cre/jahaha69.jpg" width="107" height="107" border="0" alt=""></a></div>
+    <div id="e90" style="position:absolute;left:204;top:533;width:4;height:171;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="171" alt=""></div>
+    <div id="e91" style="position:absolute;left:374;top:533;width:4;height:171;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="171" alt=""></div>
+    <div id="e92" style="position:absolute;left:1221;top:1320;width:177;height:2;"><img
+        src="images/aboutme_classic_horzline.gif" width="177" height="2" alt=""></div>
+    <div id="e93" style="position:absolute;left:1396;top:1173;width:2;height:147;"><img
+        src="images/aboutme_classic_vertline.gif" width="2" height="147" alt=""></div>
+    <div id="e94" style="position:absolute;left:820;top:1359;width:auto;height:auto;"><a>
+
+        <img src="cre/kak17.png" width="141" height="90" border="0" alt="">
+      </a></div>
+    <div id="e95" style="position:absolute;left:1285;top:1178;width:108;height:81;"><a>
+
+        <img class="bld" src="cre/kak18
+.png" width="108" height="81" border="0" alt="">
+      </a></div>
+    
+    <div id="e99" style="position:absolute;left:1220;top:1172;width:2;height:150;"><img
+        src="images/aboutme_classic_vertline.gif" width="2" height="150" alt=""></div>
+    <div id="e100" style="position:absolute;left:1220;top:1171;width:178;height:2;"><img
+        src="images/aboutme_classic_horzline.gif" width="178" height="2" alt=""></div>
+    <div id="e101" style="position:absolute;left:1029;top:1199;width:4;height:171;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="171" alt=""></div>
+    <div id="e102" style="position:absolute;left:1199;top:1199;width:4;height:171;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="171" alt=""></div>
+    <div id="e103" style="position:absolute;left:1029;top:1196;width:174;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="174" height="3" alt=""></div>
+    <div id="e104" style="position:absolute;left:1029;top:1370;width:174;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="174" height="4" alt=""></div>
+
+
+    <div id="e112" style="color:red;position:absolute;left:314;top:2068;width:132;height:auto;"><span class="text"><a>
+          <span>banal craziness</span>
+
+        </a></span> </div>
+    <div id="e115" style="position:absolute;left:819;top:173;width:202;height:23;"><span class="text">
+        <span></span>
+        <a>
+          <span><br soft></span>
+        </a></span> </div>
+
+
+    <div id="e118" style="color:red;position:absolute;left:966;top:106;width:86;height:23;"><span class="text">
+
+        <span>Overdrama</span>
+      </span> </div>
+    <div id="e119" style="position:absolute;left:1039;top:65;width:55;height:56;"><a><img class="bld"
+          src="cre/jahaha69.jpg" width="55" height="56" border="0" alt="elektronikk,lysorgel,kamera,oversetter"></a>
+    </div>
+    <div id="e124" style="position:absolute;left:1205;top:269;width:4;height:171;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="171" alt=""></div>
+    <div id="e125" style="position:absolute;left:1375;top:273;width:4;height:167;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="167" alt=""></div>
+    <div id="e126" style="position:absolute;left:1205;top:440;width:174;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="174" height="4" alt=""></div>
+    <div id="e128" style="position:absolute;left:74;top:1152;width:568;height:2;"><img
+        src="images/aboutme_classic_horzline.gif" width="568" height="2" alt=""></div>
+    <div id="e129" style="position:absolute;left:9;top:1152;width:20;height:2;"><img
+        src="images/aboutme_classic_horzline.gif" width="20" height="2" alt=""></div>
+    <div id="e130" style="position:absolute;left:9;top:945;width:3;height:29;"><img
+        src="images/aboutme_classic_vertline.gif" width="3" height="29" alt=""></div>
+    <div id="e131" style="position:absolute;left:1013;top:1018;width:4;height:171;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="171" alt=""></div>
+    <div id="e132" style="position:absolute;left:1183;top:1018;width:4;height:171;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="171" alt=""></div>
+    <div id="e133" style="position:absolute;left:1013;top:1015;width:174;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="174" height="3" alt=""></div>
+    <div id="e134" style="position:absolute;left:1013;top:1189;width:174;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="174" height="4" alt=""></div>
+    <div id="e135" style="position:absolute;left:1018;top:1022;width:166;height:111;"><a>
+
+        <img class="bld" src="cre/jahaha4.jpg" width="166" height="111" border="0" alt="">
+      </a></div>
+    <div id="e136" style="color:limegreen;position:absolute;left:1018;top:1138;width:162;height:auto;">
+      <span class="text">
+        <span>things that are super intense and go to your stomach</span>
+
+      </span>
+    </div>
+    <div id="e137" style="position:absolute;left:829;top:848;width:4;height:176;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="176" alt=""></div>
+    <div id="e138" style="position:absolute;left:1000;top:847;width:4;height:177;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="177" alt=""></div>
+    <div id="e139" style="position:absolute;left:829;top:847;width:174;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="174" height="3" alt=""></div>
+    <div id="e140" style="position:absolute;left:829;top:1021;width:174;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="174" height="4" alt=""></div>
+    <div id="e141" style="position:absolute;left:1244;top:1527;width:77;height:77;"><a>
+
+        <img src="
+
+        cre/kak19
+.png" width="77" height="77" border="0" alt="">
+      </a></div>
+ 
+    <div id="e145" style="position:absolute;left:1263;top:1728;width:3;height:159;"><img
+        src="images/aboutme_classic_vertline.gif" width="3" height="159" alt=""></div>
+    <div id="e146" style="position:absolute;left:1077;top:1728;width:189;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="189" height="4" alt=""></div>
+    <div id="e147" style="position:absolute;left:1077;top:1728;width:3;height:156;"><img
+        src="images/aboutme_classic_vertline.gif" width="3" height="156" alt=""></div>
+    <div id="e148" style="position:absolute;left:1077;top:1883;width:188;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="188" height="4" alt=""></div>
+
+    <div id="e150" style="position:absolute;left:445;top:1906;width:4;height:160;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="160" alt=""></div>
+    <div id="e151" style="position:absolute;left:615;top:1907;width:4;height:159;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="159" alt=""></div>
+    <div id="e152" style="position:absolute;left:445;top:2063;width:174;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="174" height="4" alt=""></div>
+    <div id="e153" style="position:absolute;left:445;top:1905;width:174;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="174" height="3" alt=""></div>
+    <div id="e154" style="position:absolute;left:297;top:254;width:67;height:45;"><a href="john-deere.html">
+
+        <img class="bld" src="cre/kak20
+.png" width="67" height="45" border="0" alt="">
+      </a></div>
+    <div id="e156" style="position:absolute;left:1421;top:94;width:4;height:171;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="171" alt=""></div>
+    <div id="e157" style="position:absolute;left:1591;top:94;width:4;height:172;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="172" alt=""></div>
+    <div id="e158" style="position:absolute;left:1421;top:93;width:174;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="174" height="3" alt=""></div>
+    <div id="e159" style="position:absolute;left:1421;top:264;width:174;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="174" height="4" alt=""></div>
+    <div id="e160" style="position:absolute;left:1425;top:116;width:166;height:125;"><a>
+
+        <img class="bld" src="cre/kak21
+.png" width="166" height="125" border="0" alt="">
+      </a></div>
+    <div id="e161" style="position:absolute;left:1435;top:238;width:166;height:auto;color: red;">
+      <span class="text">
+        <span>leggings fake jeans</span>
+
+      </span>
+    </div>
+    <div id="e162" style="position:absolute;left:1480;top:98;width:107;height:18;color: limegreen;"><span class="text"><a>
+          <span>Geometry in light<br soft></span>
+        </a></span> </div>
+    <div id="e163" style="position:absolute;left:403;top:398;width:auto;height:auto;"><a>
+
+        <img class="bld" src="cre/kak22
+.png" width="91" height="133" border="0" alt="">
+      </a></div>
+    <div id="e164" style="color:red;position:absolute;left:1231;top:1265;width:170;height:auto;"><span class="text">
+        <span>The face of when you believe so much of what you do</span>
+
+      </span> </div>
+    <div id="e165" style="position:absolute;left:1005;top:501;width:2;height:119;"><img
+        src="images/aboutme_classic_vertline.gif" width="2" height="119" alt=""></div>
+    <div id="e166" style="position:absolute;left:827;top:618;width:180;height:2;"><img
+        src="images/aboutme_classic_horzline.gif" width="180" height="2" alt=""></div>
+    <div id="e167" style="position:absolute;left:827;top:501;width:2;height:119;"><img
+        src="images/aboutme_classic_vertline.gif" width="2" height="119" alt=""></div>
+    <div id="e168" style="position:absolute;left:828;top:501;width:179;height:2;"><img
+        src="images/aboutme_classic_horzline.gif" width="179" height="2" alt=""></div>
+    <div id="e169" style="position:absolute;left:831;top:567;width:83;height:51;color: red;"><span class="text">
+        <span>'just' movement research<br></span>
+
+
+      </span> </div>
+    <div id="e170" style="position:absolute;left:913;top:505;width:90;height:68;"><a>
+
+        <img class="bld" src="cre/kak23.png" width="90" height="68" border="0" alt="">
+      </a></div>
+    <div id="e171" style="color:limegreen;position:absolute;left:922;top:572;width:82;height:auto;"><span class="text">
+        <span>public<br>talking</span>
+
+      </span> </div>
+    <div id="e172" style="position:absolute;left:832;top:506;width:81;height:61;"><a>
+
+        <img src="
+
+        cre/kak24
+.png" width="81" height="61" border="0" alt="">
+      </a></div>
+
+
+    <div id="e175" style="color:limegreen;position:absolute;left:1238;top:1331;width:135;height:19;"><span class="text"><a>
+          <span>massage pistol</span></span> </div>
+
+    <div id="e177" style="color:red;position:absolute;left:2034;top:199;width:138;height:19;z-index: 200;"><span
+        class="text">
+          <span>music finishes and you don’t know what do</span>
+        </span>
+    </div>
+    <div id="e178" style="color:limegreen;position:absolute;left:2035;top:728;width:196;height:auto;">
+      <span class="text">
+        <span>when the music is on time</span>
+      </span>
+    </div>
+    <div id="e179" style="position:absolute;left:1757;top:1420;width:3;height:136;"><img
+        src="images/aboutme_outdoor_yelloworange_vert.gif" width="3" height="136" alt=""></div>
+    <div id="e180" style="position:absolute;left:1683;top:1475;width:74;height:67;color: limegreen;"><span class="text">
+        <span><br></span>
+
+        <span>Marie-Antoinette out of nothing</span>
+
+      </span> </div>
+    <div id="e181" style="position:absolute;left:1735;top:1531;width:17;height:24;"><span class="text">
+        <span>o</span>
+      </span> </div>
+    <div id="e182" style="position:absolute;left:1682;top:1423;width:73;height:69;"><a>
+        <img class="bld" src="cre/jahaha6.jpg" width="73" height="69" border="0" alt="">
+      </a></div>
+    <div id="e183" style="position:absolute;left:1728;top:1478;width:31;height:20;"><span class="text">
+        <span>16:9</span>
+      </span> </div>
+    <div id="e185" style="position:absolute;left:1679;top:1420;width:3;height:135;"><img
+        src="images/aboutme_outdoor_yelloworange_vert.gif" width="3" height="135" alt=""></div>
+    <div id="e186" style="position:absolute;left:1679;top:1420;width:81;height:3;"><img
+        src="images/aboutme_outdoor_horzline.gif" width="81" height="3" alt=""></div>
+    <div id="e187" style="position:absolute;left:1679;top:1553;width:81;height:3;"><img
+        src="images/aboutme_outdoor_horzline.gif" width="81" height="3" alt=""></div>
+    <div id="e188" style="position:absolute;left:549;top:534;width:2;height:146;"><img
+        src="images/aboutme_classic_vertline.gif" width="2" height="146" alt=""></div>
+    <div id="e189" style="position:absolute;left:461;top:534;width:2;height:146;"><img
+        src="images/aboutme_classic_vertline.gif" width="2" height="146" alt=""></div>
+    <div id="e190" style="position:absolute;left:463;top:534;width:88;height:2;"><img
+        src="images/aboutme_classic_horzline.gif" width="88" height="2" alt=""></div>
+    <div id="e191" style="position:absolute;left:461;top:679;width:90;height:2;"><img
+        src="images/aboutme_classic_horzline.gif" width="90" height="2" alt=""></div>
+    <div id="e192" style="position:absolute;left:2034;top:1785;width:177;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="177" height="3" alt=""></div>
+    <div id="e193" style="position:absolute;left:2209;top:1785;width:4;height:174;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="174" alt=""></div>
+    <div id="e194" style="position:absolute;left:2033;top:1956;width:180;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="180" height="3" alt=""></div>
+    <div id="e195" style="position:absolute;left:2033;top:1785;width:4;height:173;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="173" alt=""></div>
+    <div id="e196" style="position:absolute;left:2037;top:1789;width:172;height:167;">
+      <table border="0" cellspacing="0" cellpadding="0" width="172">
+        <tr>
+          <td nowrap height="167" valign="top"><span class="text">
+              <span>.</span>
+            </span></td>
+        </tr>
+      </table>
+    </div>
+    <div id="e197" style="position:absolute;left:2037;top:1789;width:162;height:154;"><a> <img class="bld" src="cre/kak25
+.png" width="162" height="154" border="0" alt="">
+
+
+      </a></div>
+    <div id="e198" style="color: red;position:absolute;left:2041;top:1731;width:156;height:19;"><span class="text">
+        <span>chewing gum on stage</span>
+
+      </span> </div>
+    <div id="e200" style="position:absolute;left:1018;top:671;width:4;height:171;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="171" alt=""></div>
+    <div id="e201" style="position:absolute;left:1188;top:671;width:4;height:171;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="171" alt=""></div>
+    <div id="e202" style="position:absolute;left:1018;top:670;width:174;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="174" height="3" alt=""></div>
+
+
+    <div id="e206" style="position:absolute;left:1018;top:838;width:174;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="174" height="4" alt=""></div>
+    <div id="e207" style="position:absolute;left:1022;top:734;width:62;height:100;"><a>
+        <img src="cre/kak26.png" width="62" height="100" border="0" alt="">
+      </a></div>
+    <div id="e208" style="position:absolute;left:1022;top:673;width:63;height:54;"><a>
+        <img class="bld" src="cre/kak27
+.png" width="63" height="54" border="0" alt="">
+      </a></div>
+    <div id="e210" style="position:absolute;left:1085;top:673;width:103;height:112;">
+      <table border="0" cellspacing="0" cellpadding="0" width="103">
+        <tr>
+          <td nowrap height="112" valign="top"><span class="text">
+              <span>.</span>
+            </span></td>
+        </tr>
+      </table>
+    </div>
+    <div id="e211" style="position:absolute;left:1087;top:675;width:100;height:146;"><a> <img class="bld" src="cre/kak28
+.png" width="100" height="146" border="0" alt="">
+      </a></div>
+    <div id="e212" style="position:absolute;left:121;top:1849;width:auto;height:auto;"><a> <img class="bld" src="cre/kak29
+.png" width="187" height="90" border="0" alt="">
+      </a></div>
+    <div id="e213" style="color:red;position:absolute;left:294;top:1739;width:83;height:51;"><span class="text">
+        <span>staged nationalism<br></span>
+      </span> </div>
+
+    <div id="e215" style="position:absolute;left:322;top:1503;width:77;height:92;"><a> <img src="cre/kak30.png"
+          width="77" height="92" border="0" alt="">
+      </a></div>
+    <div id="e216" style="position:absolute;left:1659;top:1346;width:151;height:70;"><a
+        href="http://www.arngren.net/tog.html">
+        <!--$img %ImageAssetImpl:/TOG-liten.r1149-7109.jpg$--> <img class="bld" src="cre/kak31
+.png" width="151" height="70" border="0" alt="">
+      </a></div>
+    <div id="e217" style="position:absolute;left:1810;top:1337;width:190;height:80;"><a
+        href="http://www.arngren.net/tog.html"><img class="bld" src="cre/kak32.png" width="190" height="80" border="0"
+          alt=""></a></div>
+    <div id="e218" style="position:absolute;left:118;top:175;width:3;height:648;"><img
+        src="images/aboutme_classic_vertline.gif" width="3" height="648" alt=""></div>
+    <div id="e219" style="position:absolute;left:116;top:91;width:3;height:8;"><img
+        src="images/aboutme_classic_vertline.gif" width="3" height="8" alt=""></div>
+    <div id="e220" style="position:absolute;left:1990;top:1351;width:168;height:61;color: red;"><span class="text">
+        <span>overly active searching head<br></span>
+      </span> </div>
+    <div id="e221" style="position:absolute;left:119;top:2190;width:auto;height:175;"><img src="cre/bannermaya.jpg"
+        width="800" height="175" alt=""></div>
+
+    <div id="e223" style="position:absolute;left:909;top:2190;width:532;height:175;">
+      <img src="
+
+      cre/kak24
+.png" width="532" height="175" alt="">
+    </div>
+
+
+
+
+
+
+
+    <div id="e231" style="position:absolute;left:1441;top:2190;width:900;height:175;"><img class="bld"
+        src="cre/jahaha76.jpg" width="900" height="175" alt=""></div>
+
+    <div id="e233" style="position:absolute;left:1515;top:1651;width:316;height:74;"><img class="bld"
+        src="cre/jahaha67.jpg" width="316" height="74" alt=""></div>
+    <div id="e234" style="z-index:100;position:absolute;left:1420;top:1891;width:auto;height:auto;"><img class="bld"
+        src="cre/jahaha17.jpg" width="73" height="120" alt=""></div>
+
+
+
+
+    <div id="e239" style="position:absolute;left:2084;top:14;width:46;height:46;"><img class="bld"
+        src="cre/jahaha80.jpg" width="46" height="46" alt=""></div>
+
+
+
+    <div id="e243" style="position:absolute;left:1534;top:1518;width:4;height:119;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="119" alt=""></div>
+    <div id="e244" style="position:absolute;left:1358;top:1635;width:180;height:2;"><img
+        src="images/aboutme_classic_horzline.gif" width="180" height="2" alt=""></div>
+    <div id="e245" style="position:absolute;left:1358;top:1518;width:4;height:119;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="119" alt=""></div>
+    <div id="e246" style="position:absolute;left:1358;top:1517;width:180;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="180" height="3" alt=""></div>
+    <div id="e247" style="position:absolute;left:1361;top:1520;width:175;height:115;"><a> <img class="bld" src="cre/kak25
+.png" width="175" height="115" border="0" alt="">
+      </a></div>
+    <div id="e250" style="position:absolute;left:204;top:703;width:174;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="174" height="4" alt=""></div>
+    <div id="e251" style="position:absolute;left:1023;top:125;width:177;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="177" height="3" alt=""></div>
+    <div id="devedust" style="position:absolute;left:1023;top:126;width:177;height:3;"><img class="bld"
+        src="cre/kak20.png" width="177" height="177" alt=""></div>
+    <div id="e252" style="position:absolute;left:1198;top:125;width:4;height:174;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="174" alt=""></div>
+    <div id="e253" style="position:absolute;left:1022;top:125;width:4;height:173;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="173" alt=""></div>
+    <div id="e254" style="position:absolute;left:1346;top:1360;width:179;height:111;"><a
+        href="http://www.arngren.net/hoverpod.html">
+
+        <img class="bld" src="cre/kak26
+.png" width="179" height="111" border="0" alt="">
+      </a></div>
+  
+    <div id="e256" style="color:red;position:absolute;left:1346;top:1472;width:186;height:31;"><span class="text">
+        <span>fire blanket</span>
+      </span> </div>
+    <div id="e257" style="position:absolute;left:1442;top:483;width:177;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="177" height="3" alt=""></div>
+    <div id="e258" style="position:absolute;left:1617;top:483;width:4;height:174;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="174" alt=""></div>
+    <div id="e259" style="position:absolute;left:1441;top:654;width:180;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="180" height="3" alt=""></div>
+    <div id="e260" style="position:absolute;left:1441;top:483;width:4;height:173;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="173" alt=""></div>
+    <div id="e261" style="position:absolute;left:1445;top:488;width:172;height:165;"><a
+        href="http://www.arngren.net/verhane.html">
+
+        <img class="bld" src="cre/kak27
+.png" width="172" height="165" border="0" alt="">
+      </a></div>
+    <div id="e262" style="color: limegreen;position:absolute;left:1445;top:487;width:172;height:23;">
+      <span class="text">
+
+        <span">Horror on stage
+      </span>
+
+      </span>
+    </div>
+
+    <div id="e265" style="position:absolute;left:632;top:1751;width:4;height:149;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="149" alt=""></div>
+    <div id="e266" style="position:absolute;left:456;top:1897;width:180;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="180" height="3" alt=""></div>
+    <div id="e267" style="position:absolute;left:456;top:1751;width:4;height:148;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="148" alt=""></div>
+    <div id="e268" style="position:absolute;left:457;top:1751;width:177;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="177" height="3" alt=""></div>
+
+    <div id="e270" style="position:absolute;left:439;top:245;width:auto;height:auto;"><img class="bld" src="cre/kak29.png"
+        width="68" height="61" border="0" alt="">
+    </div>
+    <div id="e271" style="position:absolute;left:217;top:245;width:421;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="421" height="3" alt=""></div>
+    <div id="e272" style="position:absolute;left:127;top:288;width:91;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="91" height="3" alt=""></div>
+    <div id="e273" style="position:absolute;left:127;top:289;width:3;height:101;"><img
+        src="images/aboutme_classic_vertline.gif" width="3" height="101" alt=""></div>
+    <div id="e274" style="position:absolute;left:128;top:387;width:510;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="510" height="3" alt=""></div>
+    <div id="e275" style="position:absolute;left:216;top:245;width:3;height:46;"><img
+        src="images/aboutme_classic_vertline.gif" width="3" height="46" alt=""></div>
+    <div id="e276" style="position:absolute;left:1370;top:1036;width:4;height:119;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="119" alt=""></div>
+    <div id="e277" style="position:absolute;left:1194;top:1153;width:180;height:2;"><img
+        src="images/aboutme_classic_horzline.gif" width="180" height="2" alt=""></div>
+    <div id="e278" style="position:absolute;left:1196;top:1036;width:4;height:119;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="119" alt=""></div>
+    <div id="e279" style="position:absolute;left:1196;top:1035;width:178;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="178" height="3" alt=""></div>
+    <div id="e280" style="position:absolute;left:1201;top:1038;width:169;height:104;"><a
+        href="http://www.arngren.net/sykkel.html">
+        <!--$img %ImageAssetImpl:/Sykkel28.ambassador-erc.jpg$--> <img class="bld" src="cre/kak30.png" width="169"
+          height="104" border="0" alt="">
+      </a></div>
+    <div id="e281" style="color:limegreen;position:absolute;left:1306;top:1039;width:120;height:16;">
+      <span class="text">Sassiness<br></span>
+
+    </div>
+    <div id="e283" style="position:absolute;left:1200;top:1151;width:173;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="173" height="3" alt=""></div>
+
+    <div id="e287" style="position:absolute;left:351;top:1328;width:181;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="181" height="3" alt=""></div>
+    <div id="e288" style="position:absolute;left:352;top:1158;width:177;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="177" height="3" alt=""></div>
+    <div id="e289" style="position:absolute;left:527;top:1158;width:4;height:172;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="172" alt=""></div>
+    <div id="e290" style="position:absolute;left:350;top:1158;width:4;height:173;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="173" alt=""></div>
+    <div id="e291" style="color:limegreen;position:absolute;left:218;top:1293;width:140;height:auto;"><span class="text">
+        <span>action is happening on stage already</span>
+
+      </span> </div>
+    <div id="e292" style="position:absolute;left:1430;top:1171;width:177;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="177" height="3" alt=""></div>
+    <div id="e293" style="position:absolute;left:1605;top:1172;width:4;height:172;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="172" alt=""></div>
+    <div id="e294" style="position:absolute;left:1428;top:1172;width:4;height:170;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="170" alt=""></div>
+    <div id="e295" style="position:absolute;left:1432;top:1176;width:173;height:105;"><a
+        href="http://www.arngren.net/jeep.html?1325852273468"><img class="bld" src="cre/jahaha60.jpg" width="173"
+          height="105" border="0" alt=""></a></div>
+    <div id="e296" style="color:limegreen;position:absolute;left:1433;top:1284;width:171;height:61;">
+      <span class="text">
+        <span>Nice unpredictable rhythms (performers who
+          perform through the rhythm)<br></span>
+
+      </span>
+    </div>
+    <div id="e297" style="position:absolute;left:1428;top:1341;width:181;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="181" height="3" alt=""></div>
+
+    <div id="e299" style="position:absolute;left:203;top:144;width:181;height:97;">
+      <table border="0" cellspacing="0" cellpadding="0" width="181">
+        <tr>
+          <td nowrap height="97" valign="top"><span class="text">
+              <span>.</span>
+            </span></td>
+        </tr>
+      </table>
+    </div>
+    <div id="e301" style="position:absolute;left:1022;top:306;width:177;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="177" height="3" alt=""></div>
+    <div id="e302" style="position:absolute;left:1197;top:306;width:4;height:174;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="174" alt=""></div>
+    <div id="e303" style="position:absolute;left:1021;top:477;width:180;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="180" height="3" alt=""></div>
+    <div id="e304" style="position:absolute;left:1021;top:306;width:4;height:173;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="173" alt=""></div>
+    <div id="e305" style="position:absolute;left:1242;top:479;width:177;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="177" height="3" alt=""></div>
+    <div id="e306" style="position:absolute;left:1417;top:479;width:4;height:172;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="172" alt=""></div>
+    <div id="e307" style="position:absolute;left:1240;top:479;width:4;height:170;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="170" alt=""></div>
+    <div id="e308" style="position:absolute;left:1240;top:648;width:181;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="181" height="3" alt=""></div>
+
+    <div id="e310" style="position:absolute;left:1243;top:482;width:174;height:113;"><a><img class="bld"
+          src="cre/jahaha61.jpg" width="174" height="113" border="0" alt=""></a></div>
+    <div id="e311" style="position:absolute;left:208;top:240;width:181;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="181" height="3" alt=""></div>
+    <div id="e312" style="position:absolute;left:1784;top:91;width:4;height:172;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="172" alt=""></div>
+    <div id="e313" style="position:absolute;left:1607;top:92;width:4;height:173;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="173" alt=""></div>
+    <div id="e314" style="position:absolute;left:1607;top:91;width:181;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="181" height="3" alt=""></div>
+
+    <div id="e316" style="position:absolute;left:1608;top:262;width:180;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="180" height="3" alt=""></div>
+    <div id="e317" style="position:absolute;left:1609;top:94;width:176;height:auto;"><a>
+        <!--$img %ImageAssetImpl:/Luft-Jekk-stort.828852_AB_00_FB.EPS.JPG$--> <img class="bld" src="cre/kak31
+.png" width="176" height="145" border="0" alt="">
+      </a></div>
+    <div id="e318" style="position:absolute;left:207;top:533;width:auto;height:auto;"><a>
+        <!--$img %ImageAssetImpl:/Luft-Jekk-stort.828852_AB_00_FB.EPS.JPG$--> <img class="bld" src="cre/kak32
+.png" width="167" height="134" border="0" alt="">
+      </a></div>
+    <div id="e319" style="color:limegreen;position:absolute;left:242;top:670;width:153;height:auto;"><span class="text">
+        <span>Not standard<br>bodies</span>
+
+      </span> </div>
+
+    <div id="e321" style="position:absolute;left:1012;top:516;width:4;height:150;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="150" alt=""></div>
+    <div id="e322" style="position:absolute;left:1013;top:516;width:94;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="94" height="4" alt=""></div>
+    <div id="e323" style="position:absolute;left:1014;top:662;width:93;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="93" height="4" alt=""></div>
+    <div id="e324" style="position:absolute;left:1019;top:522;width:83;height:140;"><a
+        href="http://www.arngren.net/fordelere.html">
+        <!--$img %ImageAssetImpl:/FORDELERE.bildefordeler-216x277.jpg$--> <img class="bld" src="cre/kak33
+.png" width="83" height="140" border="0" alt="">
+      </a></div>
+    <div id="e326" style="position:absolute;left:1103;top:519;width:4;height:146;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="146" alt=""></div>
+    <div id="e327" style="position:absolute;left:78;top:172;width:129;height:3;"><img
+        src="images/aboutme_outdoor_horzline.gif" width="129" height="3" alt=""></div>
+    <div id="e328" style="position:absolute;left:78;top:78;width:129;height:3;"><img
+        src="images/aboutme_outdoor_horzline.gif" width="129" height="3" alt=""></div>
+    <div id="e329" style="position:absolute;left:78;top:80;width:3;height:94;"><img src="images/aboutme_orangebar.gif"
+        width="3" height="94" alt=""></div>
+
+    <div id="e331" class="kaderrang" style="position:absolute;left:458;top:1657;width:168;height:89;"><a><img class="bld"
+          src="cre/jahaha82.jpg" width="168" height="89" border="0" alt=""></a></div>
+    <div id="e332" style=" color:limegreen;position:absolute;left:123;top:237;width:88;height:59;"><span class="text">
+        <span>Sci fi Stuff</span>
+
+      </span> </div>
+    <div id="e335" style="color:limegreen;position:absolute;left:441;top:295;width:80;height:17;"><span class="text"><a>
+          <span>shoose</span>
+        </a>
+      </span> </div>
+    <div id="e336" style="position:absolute;left:823;top:1181;width:4;height:171;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="171" alt=""></div>
+    <div id="e337" style="position:absolute;left:993;top:1181;width:4;height:171;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="171" alt=""></div>
+    <div id="e338" style="position:absolute;left:823;top:1178;width:174;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="174" height="3" alt=""></div>
+    <div id="e339" style="position:absolute;left:823;top:1352;width:174;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="174" height="4" alt=""></div>
+    <div id="e340" style="color:red;position:absolute;left:830;top:12;width:172;height:19;"><span class="text">
+        <span>Being overly convinced of yourself on stage
+          (individual in group)</span>
+      </span> </div>
+    <div id="e343" style="z-index:200;color: red;position:absolute;left:745;top:1323;width:82;height:auto;">
+      <span class="text">
+        <span>actors spit</span>
+      </span>
+    </div>
+    <div id="e344" style="position:absolute;left:272;top:301;width:118;height:85;"><a>
+        <img class="bld" src="cre/jahaha5.jpg" width="118" height="85" border="0" alt="">
+      </a></div>
+
+    <div id="e347" style="position:absolute;left:122;top:529;width:81;height:84;"><a>
+        <img src="
+
+        cre/kak34
+.png" width="81" height="84" border="0" alt="">
+      </a></div>
+    <div id="e348" style="position:absolute;left:125;top:596;width:77;height:auto;color: red;"><span
+        class="text"><span>Head to high in modeling or posing </span>
+      </span> </div>
+    <div id="e349" style="position:absolute;left:127;top:396;width:155;height:105;"><a><img class="bld"
+          src="cre/jahaha81.jpg" width="155" height="105" border="0" alt=""></a></div>
+
+    <div id="e351" style="position:absolute;left:123;top:524;width:158;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="158" height="3" alt=""></div>
+    <div id="e352" style="position:absolute;left:204;top:533;width:174;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="174" height="3" alt=""></div>
+    <div id="e353" style="position:absolute;left:1022;top:298;width:180;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="180" height="4" alt=""></div>
+    <div id="e354" style="color:red;position:absolute;left:1696;top:31;width:116;height:23;"><span class="text">
+        <span>Flirting at work</span>
+      </span> </div>
+
+    <div id="e358" style="position:absolute;left:128;top:387;width:512;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="512" height="3" alt=""></div>
+    <div id="e359" style="position:absolute;left:1226;top:86;width:183;height:177;"><a> <img class="bld"
+          src="cre/jahaha7.jpg" width="183" height="177" border="0" alt="">
+      </a></div>
+
+
+    <div id="e362" style="position:absolute;left:113;top:1951;width:auto;height:auto;"><a> <img class="bld"
+          src="cre/jahaha8.jpg" width="152" height="202" border="0" alt="">
+      </a></div>
+
+
+    <div id="e368" class="kader" style="position:absolute;left:827;top:1800;width:auto;height:auto;">
+      <img class="bld"
+        src="cre/jahaha73.jpg" width="156" height="70" alt=""></div>
+    <div id="e369" class="kader" style="position:absolute;left:329;top:1635;width:auto;height:auto;"><img class="bld"
+        src="cre/jahaha74.jpg" width="120" height="260" alt=""></div>
+    <div id="e370" style="position:absolute;left:461;top:534;width:2;height:146;"><img
+        src="images/aboutme_classic_vertline.gif" width="2" height="146" alt=""></div>
+    <div id="e371" style="color:limegreen;position:absolute;left:1512;top:292;width:89;height:auto;"><span class="text">
+        <span>Live music in a circus show</span>
+
+
+      </span> </div>
+    <div id="e372" style="position:absolute;left:1467;top:8;width:73;height:61;"><a> <img class="bld" src="cre/kak37
+.png" width="73" height="61" border="0" alt="">
+      </a></div>
+    <div id="e373" style="position:absolute;left:458;top:683;width:98;height:85;"><a>
+        <img class="bld" src="cre/kak38
+.png" width="98" height="85" border="0" alt="">
+      </a></div>
+    <div id="e374" style="position:absolute;left:2094;top:1333;width:116;height:112;"><a> <img class="bld" src="cre/kak39
+.png" width="116" height="112" border="0" alt="">
+      </a></div>
+    <div id="e375" style="color:red;position:absolute;left:1520;top:1482;width:94;height:auto;"><span class="text">
+        <span>Drunk people</span>
+
+      </span> </div>
+    <div id="e376" style="position:absolute;left:569;top:323;width:29;height:19;">
+      <table border="0" cellspacing="0" cellpadding="0" width="29">
+        <tr>
+          <td nowrap height="19" valign="top">
+
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div id="e378" style="position:absolute;left:220;top:251;width:75;height:41;"><a>
+        <img class="bld" src="cre/jahaha9.jpg" width="75" height="41" border="0" alt="">
+      </a></div>
+    <div id="e379" style="position:absolute;left:577;top:250;width:60;height:51;"><a> <img class="bld"
+          src="cre/kak40.png" width="60" height="51" border="0" alt="">
+      </a></div>
+
+    <div id="e381" style="position:absolute;left:534;top:833;width:104;height:73;color:limegreen"><span class="text">
+        <span>Intense moments<br>(One way of
+          working)<br></span>
+
+
+        <span><br></span>
+        <span></span><a>
+          <span></span>
+        </a>
+      </span> </div>
+
+
+    <div id="e386" style="position:absolute;left:425;top:830;width:103;height:75;"><a>
+
+        <img class="bld" src="cre/kak42
+.png" width="103" height="75" border="0" alt="">
+      </a></div>
+
+    <div id="e390" style="position:absolute;left:638;top:245;width:3;height:145;"><img
+        src="images/aboutme_classic_vertline.gif" width="3" height="145" alt=""></div>
+    <div id="e391" style="color:red;position:absolute;left:288;top:370;width:122;height:auto;"><span class="text"><a>
+          <span>far away gaze</span>
+        </a></span> </div>
+    <div id="e392" style="position:absolute;left:321;top:847;width:95;height:60;"><a>
+        <img class="bld" src="cre/kak44.png" width="95" height="60" border="0" alt="">
+      </a></div>
+    <div id="e393" style="color:red;position:absolute;left:1128;top:94;width:60;height:auto;"><span class="text"><a>
+          <span><br>art for art</span>
+        </a></span> </div>
+    <div id="e394"class="kaderrang" style="position:absolute;left:376;top:538;width:79;height:57;"><a>
+
+        <img class="bld" src="cre/kak45
+.png" width="79" height="57" border="0" alt="">
+      </a></div>
+    <div id="e395" class="kaderrang" style="position:absolute;left:340;top:730;width:auto;height:auto;"><a><img class="bld"
+          src="cre/jahaha62.jpg" width="103" height="85" border="0" alt=""></a></div>
+    <div id="e396" style="position:absolute;left:401;top:604;width:40;height:20;"><span class="text">
+        <span></span>
+      </span> </div>
+
+
+    <div id="e400" style="z-index:-10;position:absolute;left:174;top:827;width:141;height:auto;"><a>
+        <img class="bld" src="cre/jahaha10.jpg" width="141" height="148" border="0" alt="">
+      </a></div>
+
+    <div id="e402" style="color:limegreen;position:absolute;left:115;top:833;width:65;height:18;"><span class="text">
+        
+
+        <span>when the accident becomes a gift</span>
+      </span> </div>
+
+    <div id="e404" style="position:absolute;left:508;top:251;width:70;height:38;"><a>
+        <!--$img %ImageAssetImpl:/images/ferrari-82700-2-p-232x154.jpg$--> <img class="bld" src="cre/kak47
+.png" width="70" height="38" border="0" alt="">
+      </a></div>
+    <div id="e405" style="position:absolute;left:380;top:74;width:167;height:30;">
+      <table border="0" cellspacing="0" cellpadding="0" width="167">
+        <tr>
+          <td nowrap height="30" valign="top"><span class="text">
+              <span></span>
+            </span></td>
+        </tr>
+      </table>
+    </div>
+    <div id="e406" style="position:absolute;left:122;top:176;width:87;height:60;"><a><img class="bld"
+          src="cre/jahaha74.jpg" width="87" height="60" border="0" alt=""></a></div>
+    <div id="e407" style="position:absolute;left:208;top:71;width:4;height:171;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="171" alt=""></div>
+
+    <div id="e409" style="position:absolute;left:100;top:1167;width:103;height:79;"><a>
+        <img class="bld" src="cre/kak49
+.png" width="103" height="79" border="0" alt="">
+      </a></div>
+    <div id="e410" style="color:red;position:absolute;left:117;top:1251;width:86;height:24;"><span
+        class="text"><span>fake grass</span>
+      </span></div>
+
+    <div id="e412" style="color:limegreen;position:absolute;left:401;top:369;width:239;height:20;"><span class="text"><a>
+          <span>have ideas</span>
+        </a> </span> </div>
+    <div id="e413" style="position:absolute;left:380;top:624;width:79;height:66;"><a> <img class="bld" src="cre/kak50
+.png" width="79" height="66" border="0" alt="">
+      </a></div>
+    <div id="e414" style="color:limegreen;position:absolute;left:393;top:692;width:94;height:auto;"><span class="text">
+        <span>otherwordly,<br>not human</span>
+      </span> </div>
+ 
+    <div id="e416" style="position:absolute;left:1388;top:281;width:222;height:185;"><a>
+        <img class="bld" src="cre/kak41
+.png" width="222" height="185" border="0" alt="">
+      </a></div>
+    <div id="e417" style="position:absolute;left:625;top:2031;width:auto;height:auto;">
+      <!--$img %ImageAssetImpl:/images/dampmaskin-d10-wilesco-d-10-dampmaskin.jpg$--> <img class="bld" src="cre/kak52
+.png" width="278" height="154" border="0" alt="">
+    </div>
+    <div id="e418" style=" color:red;position:absolute;left:133;top:237;width:106;height:auto;"><span class="text">
+        <span>Miming <br>the <br>action</span>
+      </span> </div>
+    <div id="e420" style="position:absolute;left:465;top:538;width:82;height:65;"><a> <img class="bld" src="cre/jahaha76.jpg" width="82" height="65" border="0" alt="">
+      </a></div>
+    <div id="e421" style="color:limegreen;position:absolute;left:469;top:660;width:78;height:22;"><span class="text">
+        <span>carrots</span> </span> </div>
+    <div id="e422" style="color:red;position:absolute;left:429;top:768;width:45;height:16;">
+
+      <span class="text">pretty hands</span>
+
+      </span>
+    </div>
+    <div id="e423" style="color:red;position:absolute;left:275;top:2000;width:89;height:auto;"><span class="text">
+        <span>fake invitations</span>
+      </span> </div>
+
+
+
+    <div id="e427" style="color:red;position:absolute;left:1476;top:449;width:151;height:21;color: red;"><span
+        class="text"><a>
+          <span>Die hard therapy</span>
+        </a></span> </div>
+    <div id="e428" style="position:absolute;left:427;top:906;width:123;height:67;"><a> <img class="bld" src="cre/kak55
+.png" width="123" height="67" border="0" alt="">
+      </a></div>
+    <div id="e429" style="color:red;position:absolute;left:554;top:918;width:101;height:69;"><span class="text">
+        <span>Lost eyes<br> (4th wall)</span>
+
+      </span> </div>
+    <div id="e430" style="position:absolute;left:437;top:169;width:88;height:72;"><a
+        href="http://www.arngren.net/elbil-moped.html">
+        <!--$img %ImageAssetImpl:/images/elmoped-orange-r3.jpg$--> <img class="bld" src="cre/kak56
+.png" width="88" height="72" border="0" alt="">
+      </a></div>
+
+
+    <div id="e433" style="position:absolute;left:1113;top:489;width:124;height:118;"><a> <img class="bld" src="cre/kak57
+.png" width="124" height="118" border="0" alt="">
+      </a></div>
+
+    <div id="e435" style="position:absolute;left:389;top:71;width:4;height:172;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="172" alt=""></div>
+    <div id="e436" style="position:absolute;left:210;top:71;width:181;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="181" height="3" alt=""></div>
+    <div id="e437" style="position:absolute;left:393;top:68;width:153;height:20;">
+      <table border="0" cellspacing="0" cellpadding="0" width="153">
+        <tr>
+          <td nowrap height="20" valign="top"><span class="text">
+              <span>.m</span>
+            </span></td>
+        </tr>
+      </table>
+    </div>
+    <div id="e438" style="position:absolute;left:394;top:50;width:134;height:114;"><a>
+        <!--$img %ImageAssetImpl:/images/elsykkel-3hjul-foran-9.jpg$--> <img class="bld" src="cre/kak58
+.png" width="134" height="114" border="0" alt="">
+      </a></div>
+    <div id="e440" style="position:absolute;left:268;top:2010;width:202;height:146;z-index: -1;"><a>
+
+        <img class="bld" src="cre/kak59
+.png" width="202" height="146" border="0" alt="">
+      </a></div>
+
+    <div id="e443" style="position:absolute;left:350;top:1251;width:177;height:2;"><img
+        src="images/aboutme_classic_horzline.gif" width="177" height="2" alt=""></div>
+    <div id="e444" style="position:absolute;left:218;top:141;width:169;height:97;"><a>
+
+        <img class="bld" src="cre/kak60.gif" width="169" height="97" border="0" alt="">
+      </a></div>
+    <div id="e445" style="position:absolute;left:211;top:142;width:181;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="181" height="3" alt=""></div>
+    <div id="e446" style="position:absolute;left:212;top:74;width:106;height:68;"><a>
+
+        <img class="bld" src="cre/jahaha11.jpg" width="106" height="68" border="0" alt="">
+      </a></div>
+    <div id="e447" style="position:absolute;left:316;top:74;width:73;height:68;"><a>
+
+        <img class="bld" src="cre/kak61.gif" width="73" height="68" border="0" alt="">
+      </a></div>
+
+
+
+    <div id="e452" style="color:red;position:absolute;left:648;top:8;width:157;height:auto;"><span class="text"><a>
+          <span>little glitter in the hand</span>
+
+        </a></span> </div>
+    <div id="e453" style="color:red;position:absolute;left:397;top:175;width:66;height:76;"><span class="text"><a>
+          <span>sexy attitude</span>
+        </a></span> </div>
+    <div id="e454" style="position:absolute;left:1027;top:311;width:166;height:131;"><a> <img class="bld" src="cre/kak62
+.gif" width="166" height="131" border="0" alt="">
+      </a></div>
+
+
+    <div id="e457" class="kader" style="position:absolute;left:527;top:165;width:113;height:72;"><a> <img class="bld" src="cre/kak63
+.gif" width="113" height="72" border="0" alt="">
+      </a></div>
+    <div id="e459" style="position:absolute;left:285;top:395;width:113;height:132;"><a>
+        <!--$img %ImageAssetImpl:/images/elbil-moped-yBv7lcsbM.jpg$--> <img class="bld" src="cre/kak64
+.gif" width="113" height="132" border="0" alt="">
+      </a></div>
+    <div id="e461" style="color:limegreen;position:absolute;left:190;top:500;width:92;height:auto;"><span class="text">
+        <span>sincerity</span>
+      </span> </div>
+    <div id="e463" style="position:absolute;left:128;top:710;width:203;height:110;"><a>
+        <!--$img %ImageAssetImpl:/images/EL-sykkel-d-MG_9769.jpg$--> <img class="bld" src="cre/kak65
+.gif" width="203" height="110" border="0" alt="">
+      </a></div>
+    <div id="e464" style="color:red;position:absolute;left:1205;top:450;width:auto;height:114;"><span class="text">
+        <span>foreseeable actions in repetition</span><a>
+          <span></span>
+
+        </a>
+      </span> </div>
+    <div id="e465" style="position:absolute;left:821;top:624;width:187;height:163;"><a> <img class="bld" src="cre/kak66
+.gif" width="187" height="163" border="0" alt="">
+      </a></div>
+
+    <div id="e467" style="color:red;position:absolute;left:410;top:1335;width:67;height:auto;"><span class="text">
+        <span>arrogance</span>
+
+      </span> </div>
+    <div id="e468" style="position:absolute;left:350;top:1003;width:3;height:8;"><img
+        src="images/aboutme_classic_vertline.gif" width="3" height="8" alt=""></div>
+ 
+    <div id="e471" style="position:absolute;left:317;top:993;width:163;height:125;">
+        <!--$img %ImageAssetImpl:/images/solcellepakke-1-79933_Solcellepakke__Standard_200W_1.jpg$--> <img class="bld"
+          src="cre/kak67.gif" width="163" height="125" border="0" alt="">
+      </div>
+    <div id="e472" style="color:limegreen;position:absolute;left:322;top:1119;width:170;height:23;">
+      <span class="text">
+        <span></span>
+        <span>polyrhythms (mixing emotions)</span>
+
+
+      </span>
+    </div>
+
+  
+    <div id="e476" style="position:absolute;left:1200;top:663;width:247;height:186;">
+        <!--$img %ImageAssetImpl:/images/elsykkel-SAMMENLEGGBAR-9T_7TK29F.jpg$--> <img class="bld"
+          src="cre/jahaha33.jpg" width="247" height="186" border="0" alt="">
+      </div>
+
+    <div id="e478" style="position:absolute;left:211;top:1159;width:134;height:auto;"><a href="cree-led.html">
+        <!--$img %ImageAssetImpl:/images/LYKT-cree.x60-2-480x299.jpg$--> <img class="bld" src="cre/jahaha34.jpg"
+          width="134" height="132" border="0" alt="">
+      </a></div>
+    <div id="e479" style="position:absolute;left:557;top:684;width:83;height:68;"><a>
+        <!--$img %ImageAssetImpl:/images/elsykkel-FATBIKE-Xh4uz7r9H.jpg$--> <img class="bld" src="cre/jahaha35.jpg"
+          width="83" height="68" border="0" alt="">
+      </a></div>
+    <div id="e480" style="color:limegreen;position:absolute;left:560;top:754;width:auto;height:75;"><span class="text">
+        <span>clean people</span>
+
+      </span> </div>
+    <div id="e481" style="position:absolute;left:453;top:1911;width:160;height:129;"><a>
+        <!--$img %ImageAssetImpl:/images/elbil-bla-EJg2fcfZo4.jpg$--> <img class="bld" src="cre/jahaha58.jpg"
+          width="160" height="129" border="0" alt="">
+      </a></div>
+    <div id="e482" style="color:limegreen;position:absolute;left:453;top:2040;width:188;height:30;"><span
+        class="text"><span>hiphop, crump</span> </span> </div>
+    <div id="e483" style="position:absolute;left:82;top:82;width:124;height:88;"><a>
+        <!--$img %ImageAssetImpl:/images/elsykkel-FATBIKE-LITE-BILDE-23061_Fatbike_Sammenleggbar_750w_48v_1.jpg$--> <img
+          class="bld" src="cre/jahaha12.jpg" width="124" height="88" border="0" alt="">
+      </a></div>
+    <div id="e486" style="position:absolute;left:319;top:906;width:96;height:65;"><a href="john-deere.html">
+        <!--$img %ImageAssetImpl:/images/eltraktor-ground_force_5.jpg$--> <img class="bld" src="cre/jahaha36.jpg"
+          width="96" height="65" border="0" alt="">
+      </a></div>
+    <div id="e487" style="position:absolute;left:835;top:853;width:163;height:164;"><a href="RC.html">
+        <!--$img %ImageAssetImpl:/images/rctank-torro-14097_14097_20170317113109469.jpg$--> <img class="bld"
+          src="cre/jahaha37.jpg" width="163" height="164" border="0" alt="">
+      </a></div>
+    <div id="e488" style="position:absolute;left:838;top:784;width:129;height:35;color: red;"><span class="text">
+        <span>movement following breathing</span>
+      </span> </div>
+    <div id="e489" style="position:absolute;left:906;top:999;width:102;height:35;"><span class="text">
+        <span></span>
+        <span> </span><a href="RC.html">
+          <span>-</span>
+        </a>
+      </span> </div>
+    <div id="e491" style="position:absolute;left:822;top:131;width:186;height:auto;"><span class="text">
+        <span style="color:red;font-size:35px;line-height:30px;text-transform:uppercase;">BAD BAD TASTE</span>
+
+
+        <span style="color:limegreen;font-size:35px;line-height:30px;text-transform:uppercase">GOOD BAD TASTE</span>
+
+      </span> </div>
+    <div id="e492" style="position:absolute;left:555;top:535;width:85;height:83;"><a> <img class="bld"
+          src="cre/jahaha38.jpg" width="85" height="83" border="0" alt="">
+      </a></div>
+    <div id="e493" style="position:absolute;left:554;top:610;width:95;height:75;color: red;"><span class="text">
+
+        <span>Overuse of the passing through David Zambrano turn</span>
+
+
+
+      </span> </div>
+    <div id="e494" style="position:absolute;left:557;top:533;width:85;height:20;">
+      <table border="0" cellspacing="0" cellpadding="0" width="85">
+        <tr>
+          <td nowrap height="20" valign="top"><span class="text"><span>Torro</span></span></td>
+        </tr>
+      </table>
+    </div>
+
+    <div id="e496" style="position:absolute;left:1084;top:1736;width:177;height:146;"><a>
+        <!--$img %ImageAssetImpl:/images/elbil-j-dsc_1890.jpg$--> <img class="bld" src="cre/jahaha39.jpg" width="177"
+          height="146" border="0" alt="">
+      </a></div>
+
+
+    <div id="e499" style="position:absolute;left:1684;top:1854;width:107;height:107;"><a>
+        <!--$img %ImageAssetImpl:/images/elbil-porsche-IMG_4627_1772x1772-600x600.jpg$--> <img class="bld"
+          src="cre/jahaha40.jpg" width="107" height="107" border="0" alt="">
+      </a></div>
+    <div id="e500" style="color:red;position:absolute;left:1682;top:1962;width:250;height:auto;"><span class="text">
+        <span>German staatstheater playing shakespeare (Old,
+          universal, canon, chique,
+          lot's of money, swimming pool in the middle.<br> </span>
+      </span> </div>
+    <div id="e501" style="position:absolute;left:1034;top:1198;width:164;height:auto;"><a>
+        <!--$img %ImageAssetImpl:/images/elsykkel-s-85876_Whizzy_El_Sykkel_Es2_Norges_R_este_3.jpg$--> <img class="bld"
+          src="cre/jahaha41.jpg" width="164" height="135" border="0" alt="">
+      </a></div>
+
+
+    <div id="e505" style="position:absolute;left:827;top:1183;width:165;height:92;"><a>
+        <img class="bld" src="cre/kak1.png" width="165" height="92" border="0" alt="">
+      </a></div>
+
+    <div id="e508" style="position:absolute;left:1019;top:849;width:160;height:160;"><a>
+        <img class="bld" src="cre/jahaha12.jpg" width="160" height="160" border="0" alt="">
+      </a></div>
+    <div id="e509" style="color:red;position:absolute;left:1186;top:852;width:200;height:auto;"><span class="text">
+        <span>eco feminism, naive, ideally portrait nature (‘we are together in nature’-vibe) (the banal use of
+          ritual)</span>
+
+
+      </span> </div>
+    <div id="e510" style="position:absolute;left:1207;top:270;width:171;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="171" height="3" alt=""></div>
+    <div id="e511" style="position:absolute;left:1212;top:277;width:160;height:152;"><a>
+        <img class="bld" src="cre/jahaha42.jpg" width="160" height="152" border="0" alt="">
+      </a></div>
+    <div id="e514" style="position:absolute;left:402;top:1475;width:236;height:144;"><a> <img class="bld"
+          src="cre/jahaha13.jpg" width="236" height="144" border="0" alt="">
+      </a></div>
+    <div id="e515" style="color:limegreen;position:absolute;left:463;top:1620;width:174;height:auto;"><span
+        class="text"><span>long performances that you feel it’s my long day<br></span> </span> </div>
+
+
+    <div id="e519" style="color:limegreen;position:absolute;left:135;top:1428;width:81;height:52;">
+
+      <span>ecosphere<br></span>
+
+
+      </span>
+    </div>
+    <div id="e520" style="position:absolute;left:119;top:1323;width:94;height:103;"><a> <img class="bld"
+          src="cre/jahaha15.jpg" width="94" height="103" border="0" alt="">
+      </a></div>
+
+
+
+
+
+    <div id="e526" style="position:absolute;left:1228;top:1609;width:126;height:111;"><a href="tank-stor.html">
+        <!--$img %ImageAssetImpl:/images/rctank-torro-14097_14097_20170317113109469.jpg$--> <img class="bld"
+          src="cre/jahaha18.jpg" width="126" height="111" border="0" alt="">
+      </a></div>
+    <div id="e528" style="position:absolute;left:488;top:987;width:150;height:84;"><a
+        href="http://gratis-annonse.no/elsykkel-peak-borstelos-motor-seter-bremser.html">
+        <!--$img %ImageAssetImpl:/images/elsykkel-TAK-STOR-CW4kYh5s.jpg$--> <img class="bld" src="cre/jahaha19.jpg"
+          width="150" height="84" border="0" alt="">
+      </a></div>
+
+    <div id="e531" style="position:absolute;left:645;top:1227;width:169;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="169" height="4" alt=""></div>
+    <div id="e532" style="position:absolute;left:648;top:1408;width:auto;height:93;"><a>
+        <!--$img %ImageAssetImpl:/images/elsykkel-long-john-ZaTI_ykUE.jpg$--> <img class="bld" src="cre/jahaha20.jpg"
+          width="164" height="93" border="0" alt="">
+      </a></div>
+    <div id="e533" style="position:absolute;left:969;top:1384;width:92;height:46;color: red;"><span class="text">
+        <span>training clothes</span>
+      </span> </div>
+    <div id="e534" style="position:absolute;left:645;top:1407;width:169;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="169" height="4" alt=""></div>
+    <div id="e535" style="position:absolute;left:646;top:1500;width:168;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="168" height="4" alt=""></div>
+    <div id="e536" style="position:absolute;left:645;top:1714;width:168;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="168" height="4" alt=""></div>
+    <div id="e537" style="position:absolute;left:645;top:1227;width:169;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="169" height="4" alt=""></div>
+
+
+    <div id="e540" style="position:absolute;left:1805;top:1726;width:216;height:232;"><a
+        href="http://www.arngren.net/julepresang.html">
+        <!--$img %ImageAssetImpl:/images/yoda-nedlasting.jpg$--> <img class="bld" src="cre/jahaha22.jpg" width="216"
+          height="232" border="0" alt="">
+      </a></div>
+    <div id="e541" style="position:absolute;left:1828;top:1930;width:37;height:18;"><span class="text">
+        <span>Yoda</span>
+      </span> </div>
+    <div id="e542" style="position:absolute;left:648;top:1875;width:165;height:auto;"><a>
+        <!--$img %ImageAssetImpl:/images/elbil-moped-yBv7lcsbM.jpg$--> <img class="bld" src="cre/jahaha24.jpg"
+          width="165" height="158" border="0" alt="">
+      </a></div>
+
+    <div id="e544" style="position:absolute;left:828;top:1268;width:165;height:auto;"><a> <img class="bld"
+          src="cre/jahaha25.jpg" width="165" height="83" border="0" alt="">
+      </a></div>
+    <div id="e546" style="position:absolute;left:651;top:1234;width:90;height:169;"><a href="teleskop.html">
+        <img class="bld" src="cre/jahaha26.jpg" width="90" height="169" border="0" alt="">
+      </a></div>
+    <div id="e547" style="position:absolute;left:645;top:1407;width:169;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="169" height="4" alt=""></div>
+
+    <div id="e549" style="position:absolute;left:648;top:1503;width:auto;height:auto;"><a>
+        <img class="bld" src="cre/jahaha27.jpg" width="167" height="178" border="0" alt="">
+      </a></div>
+    <div id="e550" style="position:absolute;left:646;top:1500;width:168;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="168" height="4" alt=""></div>
+    <div id="e551" style="position:absolute;left:645;top:1714;width:168;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="168" height="4" alt=""></div>
+    <div id="e552" style="color:limegreen;position:absolute;left:668;top:1688;width:167;height:58;"><span class="text">
+        <span>water on scene</span>
+
+      </span> </div>
+    <div id="e553" style="color:limegreen;position:absolute;left:651;top:1001;width:170;height:auto;"><span class="text">
+        <span>synch choreo on drake or pop music<br></span>
+      </span> </div>
+    <div id="e554" style="position:absolute;left:646;top:992;width:168;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="168" height="4" alt=""></div>
+    <div id="e555" style="position:absolute;left:647;top:619;width:168;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="168" height="3" alt=""></div>
+
+    <div id="e557" style="position:absolute;left:646;top:887;width:168;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="168" height="3" alt=""></div>
+    <div id="e558" style="position:absolute;left:645;top:778;width:168;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="168" height="3" alt=""></div>
+    <div id="e559" style="position:absolute;left:646;top:420;width:168;height:2;"><img
+        src="images/aboutme_classic_horzline.gif" width="168" height="2" alt=""></div>
+    <div id="e560" style="position:absolute;left:646;top:887;width:168;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="168" height="3" alt=""></div>
+    <div id="e561" style="position:absolute;left:651;top:424;width:157;height:191;"><a>
+        <!--$img %ImageAssetImpl:/images/elbil-2-14-450x600.jpg$--> <img class="bld" src="cre/jahaha28.jpg" width="157"
+          height="191" border="0" alt="">
+      </a></div>
+
+
+    <div id="e567" style="position:absolute;left:646;top:992;width:168;height:4;"><img
+        src="images/aboutme_classic_horzline.gif" width="168" height="4" alt=""></div>
+    <div id="e568" style="position:absolute;left:647;top:619;width:168;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="168" height="3" alt=""></div>
+
+    <div id="e570" style="position:absolute;left:646;top:887;width:168;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="168" height="3" alt=""></div>
+    <div id="e571" style="position:absolute;left:645;top:778;width:168;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="168" height="3" alt=""></div>
+    <div id="e572" style="position:absolute;left:646;top:887;width:168;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="168" height="3" alt=""></div>
+    <div id="e573" class="kader" style="position:absolute;left:1768;top:1433;width:97;height:97;"><a> <img class="bld"
+          src="cre/jahaha30.jpg"" width=" 97" height="97" border="0" alt="">
+      </a></div>
+
+    <div id="e576" style="position:absolute;left:648;top:1034;width:auto;height:193;"><a> <img class="bld"
+          src="cre/jahaha31.jpg" width="164" height="193" border="0" alt="">
+      </a></div>
+
+    <div id="e578" style="position:absolute;left:1666;top:1560;width:159;height:87;"><a> <img class="bld"
+          src="cre/jahaha32.jpg" width="159" height="87" border="0" alt="">
+      </a></div>
+
+    <div id="e581" style="position:absolute;left:650;top:624;width:161;height:150;"><a>
+        <img class="bld"
+          src="cre/kak33.png" width="161" height="150" border="0" alt="">
+      </a></div>
+
+    <div id="e584" style="position:absolute;left:649;top:129;width:161;height:159;"><a>
+        <img class="bld" src="cre/kak33.png" width="161"
+          height="159" border="0" alt="">
+      </a></div>
+    <div id="e586" style="position:absolute;left:651;top:220;width:161;height:205;"><a>
+        <img class="bld"
+          src="cre/kak34.png" width="161" height="205" border="0" alt="">
+      </a></div>
+    <div id="e588" style="position:absolute;left:654;top:115;width:165;height:18;color: limegreen;"><span class="text"><a>
+          <span>Well crafted piece <br>(martial arts)</span>
+
+        </a></span> </div>
+
+
+    <div id="e594" style="color:red;position:absolute;left:495;top:1075;width:134;height:auto;"><span class="text">
+        <span>pretending to act like you are backstage on stage<br></span>
+
+      </span> </div>
+    <div id="e595" style="color:red;position:absolute;left:465;top:608;width:89;height:auto;"><span class="text">
+        <span>having a fake dissability</span>
+
+      </span> </div>
+    <div id="e596" style="position:absolute;left:1630;top:470;width:391;height:263;"><a>
+        <img class="bld" src="cre/kak35.png" width="391" height="263" border="0" alt="">
+      </a></div>
+    <div id="e597" style="position:absolute;left:650;top:891;width:160;height:100;"><a>
+        <img class="bld" src="cre/kak36.png" width="160" height="100" border="0" alt="">
+      </a></div>
+    <div id="e599" style="position:absolute;left:1621;top:745;width:600;height:600;"><a><img class="bld"
+          src="cre/kak37.png" width="600" height="600" border="0" alt=""></a></div>
+    <div id="e600" style="position:absolute;left:535;top:1156;width:104;height:235;"><a href="elscooter.html"> <img
+          class="bld" src="cre/kak37.png" width="104" height="235" border="0" alt="">
+      </a></div>
+    <div id="e601" style="position:absolute;left:1062;top:1337;width:109;height:51;color: limegreen;"><span class="text">
+        <span>Falling objects from the ceiling</span>
+
+      </span> </div>
+    <div id="e602" style="position:absolute;left:535;top:1402;width:94;height:67;color: red;"><span class="text">
+        <span>Dancing</span>
+
+        <span>and<br>speaking<br></span>
+        <span>at the same<br></span>
+        <span>time</span><a>
+          <span> </span>
+        </a><a>
+          <span></span>
+        </a><a>
+          <span></span>
+        </a><a>
+          <span></span>
+        </a>
+      </span> </div>
+    <div id="e603" style="position:absolute;left:453;top:1783;width:184;height:108;"><a>
+
+        <img class="bld" src="cre/kak38.png" width="184" height="108" border="0" alt="">
+      </a></div>
+    <div id="e604" style="color:red;position:absolute;left:125;top:1799;width:221;height:156;"><span
+        class="text"><span>Catharsis on stage as therapy (shouting or crying, showing transgression)<br></span>
+      </span> </div>
+    <div id="e605" style="position:absolute;left:464;top:1759;width:auto;height:52;color: red;"><span class="text">
+        <span>badly performed technique</span>
+
+       
+      </span> </div>
+
+    <div id="e608" style="color:limegreen;position:absolute;left:990;top:1799;width:100;height:auto;">
+      <span class="text">
+        <span>generous<br>performers</span>
+
+      </span>
+    </div>
+  
+    <div id="e615" style="border:4px solid black;position:absolute;left:1079;top:1574;width:136;height:136;">
+
+        <img class="bld" src="cre/kak41.png" width="136" height="136" border="0" alt="">
+      </div>
+    <div id="e616" style="color:limegreen;position:absolute;left:1084;top:1639;width:147;height:23;"><span class="text">
+        <span>Something that
+          captures our time</span>
+
+      </span> </div>
+    <div id="e619" style="position:absolute;left:470;top:2080;width:180;height:auto;color: red;"><span
+        class="text"><span>Awkward insestent little actions (not stopping the movement)</span></span> </div>
+    <div id="e620" style="position:absolute;left:144;top:1618;width:184;height:176;"><a>
+
+        <img class="bld" src="cre/kak42.png" width="184" height="176" border="0" alt="">
+      </a></div>
+    <div id="e621" style="position:absolute;left:409;top:1475;width:175;height:21;color: limegreen;"><span class="text">
+        <span>Absence of moral point</span>
+      </span> </div>
+    <div id="e622" style="position:absolute;left:1401;top:1910;width:auto;height:auto;"><a>
+
+        <img class="bld" src="cre/kak43.png" width="275" height="298" border="0" alt="">
+      </a></div>
+    <div id="e625" style="position:absolute;left:1390;top:851;width:222;height:303;"><a>
+
+        <img class="bld" src="cre/kak44.png" width="222" height="303" border="0" alt="">
+      </a></div>
+
+    <div id="e629" class="kaderrang" style="position:absolute;left:824;top:1452;width:200;height:auto;"><a>
+
+        <img class="bld" src="cre/kak45.png" width="200" height="154" border="0" alt="">
+      </a></div>
+    <div id="e630" style="color:limegreen;position:absolute;left:1030;top:1571;width:160;height:44;"><span
+        class="text"><span>white<br> shoes</span>
+        </a></span> </div>
+
+    <div id="e633" style="color:limegreen;position:absolute;left:1620;top:243;width:153;height:auto;"><span class="text">
+        <span>deep subjects</span>
+
+      </span> </div>
+    <div id="e634" style="position:absolute;left:2031;top:81;width:206;height:101;"><a>
+
+        <img class="bld" src="cre/kak47.png" width="206" height="101" border="0" alt="">
+      </a></div>
+    <div id="e635" style="position:absolute;left:2043;top:320;width:190;height:155;"><a>
+
+        <img class="bld" src="cre/kak48.png" width="190" height="155" border="0"
+          alt="gaver,software,dataspill,mikroskop">
+      </a></div>
+    <div id="e636" style="position:absolute;left:2039;top:183;width:193;height:137;"><a>
+
+        <img class="bld" src="cre/kak49.png" width="193" height="137" border="0" alt="">
+      </a></div>
+    <div id="e637" style="color:red;position:absolute;left:2189;top:483;width:140;height:18;"><span class="text">
+        <span>show off</span>
+      </span> </div>
+    <div id="e638" style="color:limegreen;position:absolute;left:2054;top:354;width:135;height:16;"><span class="text"><a>
+          <span>dance studio</span>
+        </a></span> </div>
+    <div id="e639" style="position:absolute;left:821;top:425;width:113;height:70;"><a>
+
+        <img class="bld" src="cre/kak50.png" width="113" height="70" border="0" alt="">
+      </a></div>
+    <div id="e640" style="color:limegreen;position:absolute;left:932;top:445;width:93;height:51;"><span class="text">
+        <span>Appear or disappear out of nowhere</span>
+
+        </a>
+      </span> </div>
+    <div id="e641" style="position:absolute;left:1615;top:286;width:204;height:176;"><a>
+
+        <img class="bld" src="cre/kak51.png" width="204" height="176" border="0" alt="">
+      </a></div>
+    <div id="e642" style="color:red;position:absolute;left:1827;top:445;width:177;height:auto;"><span class="text">
+        <span>fake show in medieval</span>
+      </span> </div>
+    <div id="e643" style="position:absolute;left:830;top:281;width:187;height:149;"><a>
+
+        <img class="bld" src="cre/kak52.png" width="187" height="149" border="0" alt="">
+      </a></div>
+    <div id="e644" style="color:limegreen;position:absolute;left:1119;top:606;width:139;height:auto;"><span class="text">
+        <span>perfect <br>organisation<br></span>
+
+
+      </span> </div>
+    <div id="e645" style="color:red;position:absolute;left:924;top:411;width:61;height:23;"><span class="text"><a>
+          <span>copy cirque</span>
+        </a></span> </div>
+
+    <div id="e647" style="position:absolute;left:154;top:986;width:154;height:75;"><a>
+
+        <img class="bld" src="cre/kak53.png" width="154" height="75" border="0" alt="">
+      </a></div>
+    <div id="e648" style="color:red;position:absolute;left:156;top:1063;width:150;height:auto;"><span class="text">
+        <span>public gets too much responsibility (story of the lamp)</span>
+
+      </span> </div>
+
+    <div id="e653" style="position:absolute;left:277;top:394;width:4;height:130;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="130" alt=""></div>
+    <div id="e654" style="position:absolute;left:499;top:498;width:144;height:auto;color: red;"><span class="text">
+        <span>Grey, brown or black suits + suitcase </span><a>
+          <span></span>
+        </a><a>
+          <span></span>
+        </a><a>
+          <span></span>
+        </a>
+      </span> </div>
+    <div id="e655" style="position:absolute;left:650;top:782;width:163;height:104;"><a>
+
+
+        <img class="bld" src="cre/kak53.png" width="163" height="104" border="0" alt="">
+      </a></div>
+    <div id="e656" style="color:red;position:absolute;left:650;top:640;width:167;height:18;"><span class="text">
+        <span>circus and the representation of virtuosity</span>
+
+      </span> </div>
+    <div id="e657" style="color:limegreen;position:absolute;left:719;top:790;width:89;height:22;"><span class="text"><a>
+          <span>just sweat</span>
+        </a></span> </div>
+    <div id="e658" style="position:absolute;left:8;top:822;width:135;height:51;">
+
+      <form method="get" action="/.search">
+
+        <input type="hidden" name="results_page" value="">
+        <input type="text" name="p" value="" size="18">
+        <input type="submit" name="name" value="Search">
+      </form>
+
+    </div>
+    <div id="e659" style="color: limegreen;position:absolute;left:1663;top:1820;width:165;height:19;"><span class="text"><a>
+          <span>Microwave or other
+            households</span>
+        </a></span> </div>
+    <div id="e660" style="position:absolute;left:645;top:1717;width:166;height:auto;"><a>
+
+        <img class="bld" src="cre/kak54.png" width="166" height="122" border="0" alt="">
+      </a></div>
+    <div id="e661" style="color:red;position:absolute;left:655;top:1839;width:157;height:auto;"><span class="text">
+        <span>too long scenes, stretching time</span>
+
+      </span> </div>
+
+
+    <div id="e664" style="position:absolute;left:1838;top:1540;width:177;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="177" height="3" alt=""></div>
+    <div id="e665" style="position:absolute;left:2013;top:1540;width:4;height:172;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="172" alt=""></div>
+    <div id="e666" style="position:absolute;left:1836;top:1540;width:4;height:170;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="170" alt=""></div>
+    <div id="e667" style="position:absolute;left:1836;top:1709;width:181;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="181" height="3" alt=""></div>
+    <div id="e668" style="position:absolute;left:1846;top:1659;width:164;height:69;color: limegreen;"><span class="text">
+        <span>Opulence and glamour<br></span>
+      </span> </div>
+
+    <div id="e671" style="position:absolute;left:1841;top:1544;width:171;height:113;"><a>
+
+        <img class="bld" src="cre/kak55.png" width="171" height="113" border="0" alt="">
+      </a></div>
+    <div id="e672" style="position:absolute;left:2026;top:1538;width:250;height:188;"><a><img class="bld"
+          src="cre/kak56.png" width="250" height="188" border="0" alt=""></a></div>
+    <div id="e673" style="position:absolute;left:1838;top:1540;width:177;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="177" height="3" alt=""></div>
+    <div id="e674" style="position:absolute;left:2013;top:1540;width:4;height:172;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="172" alt=""></div>
+    <div id="e675" style="position:absolute;left:1836;top:1540;width:4;height:170;"><img
+        src="images/aboutme_classic_vertline.gif" width="4" height="170" alt=""></div>
+    <div id="e676" style="position:absolute;left:1836;top:1709;width:181;height:3;"><img
+        src="images/aboutme_classic_horzline.gif" width="181" height="3" alt=""></div>
+
+
+    <div id="e681" style="position:absolute;left:1087;top:1700;width:156;height:23;"><span class="text"><a>
+          <span> </span>
+        </a></span> </div>
+    <div id="e682" style="position:absolute;left:823;top:1877;width:245;height:162;"><a>
+
+        <img class="bld" src="cre/kak57
+.png" width="245" height="162" border="0" alt="">
+      </a></div>
+    <div id="e686" style="position:absolute;left:1517;top:16;width:90;height:45;"><a><img class="bld"
+          src="cre/jahaha63.jpg" width="90" height="45" border="0" alt=""></a></div>
+    <div id="e687" style="position:absolute;left:1087;top:1894;width:332;height:173;"><a>
+
+        <img class="bld" src="cre/kak58.png" width="332" height="173" border="0" alt="">
+      </a></div>
+    <div id="e688" class="kader" style="position:absolute;left:1279;top:1729;width:342;height:159;"><a>
+
+        <img class="bld" src="cre/kak8.png" width="342" height="159" border="0" alt="">
+      </a></div>
+    <div id="e689" style="position:absolute;left:1100;top:2075;width:250;height:25;color: red;"><span
+        class="text"><span>Argentinian Cool actors Attitude</span>
+      </span> </div>
+
+    <div id="e691" style="position:absolute;left:828;top:1615;width:234;height:176;">
+      <a">
+
+        <img class="bld" src="cre/jahaha16.jpg" width="234" height="176" border="0" alt="">
+        </a>
+    </div>
+    <div id="e692" style="position:absolute;left:394;top:316;width:88;height:51;"><a>
+
+        <img class="bld" src="cre/jahaha44.jpg" width="88" height="51" border="0" alt="">
+      </a></div>
+    <div id="e693" style="position:absolute;left:2033;top:504;width:210;height:220;"><a>
+
+        <img class="bld" src="cre/jahaha45.jpg" width="210" height="220" border="0" alt="">
+      </a></div>
+    <div id="e694" style="position:absolute;left:1831;top:284;width:196;height:147;"><a>
+
+        <img class="bld" src="cre/jahaha46.jpg" width="196" height="147" border="0" alt="">
+      </a></div>
+    <div id="e695" style="position:absolute;left:488;top:295;width:86;height:77;"><a>
+
+        <img class="bld" src="cre/jahaha47.jpg" width="86" height="77" border="0" alt="">
+      </a></div>
+    <div id="e696" style="color:red;position:absolute;left:578;top:320;width:70;height:50;"><span class="text">
+        <span>shiny<br>love<br>act</span> </span> </div>
+    <div id="e697" style="color:red;position:absolute;left:126;top:679;width:90;height:auto;"><span class="text"><a>
+          <span>halfway<br>no glitter</span>
+        </a></span> </div>
+    <div id="e698" style="color:limegreen;position:absolute;left:1001;top:31;width:130;height:auto;"><span class="text"><a>
+          <span>naked feet on stage</span>
+        </a></span> </div>
+    <div id="e699" style="position:absolute;left:2045;top:1451;width:174;height:91;"><a href="Boat.html">
+
+        <img class="bld" src="cre/jahaha48.jpg" width="174" height="91" border="0" alt="">
+      </a></div>
+ 
+    <div id="e701" style="color: limegreen;position:absolute;left:1872;top:1442;width:80;height:38;"><span class="text">
+        <span>amazing costumes </span>
+      </span> </div>
+    <div id="e702" style="position:absolute;left:1682;top:2026;width:224;height:auto;">
+
+      <img class="bld" src="cre/jahaha49.jpg" width="224" height="160" border="0" alt="">
+    </div>
+    <div id="e703" style="position:absolute;left:356;top:1255;width:87;height:72;"><a>
+
+        <img class="bld" src="cre/jahaha50.jpg" width="87" height="72" border="0" alt="">
+      </a></div>
+    <div id="e704" style="position:absolute;left:355;top:1162;width:171;height:87;"><a>
+
+        <img class="bld" src="cre/jahaha51.jpg" width="171" height="87" border="0" alt="">
+      </a></div>
+    <div id="e705" style="position:absolute;left:443;top:1254;width:82;height:71;"><a>
+
+        <img class="bld" src="cre/jahaha52.jpg" width="82" height="71" border="0" alt="">
+      </a></div>
+
+    <div id="e709" style="position:absolute;left:1931;top:1974;width:290;height:auto;"><a>
+
+        <img class="bld" src="cre/jahaha53.jpg" width="290" height="204" border="0" alt="">
+      </a></div>
+   
+    <div id="e713" style="position:absolute;left:134;top:295;width:133;height:88;"><a>
+
+        <img class="bld" src="cre/jahaha2.jpg" width="133" height="88" border="0" alt="">
+      </a></div>
+
+
+
+    <div id="e717" class="kader" style="position:absolute;left:1245;top:926;width:144;height:103;"><a>
+
+        <img class="bld" src="cre/jahaha56.jpg" width="144" height="103" border="0" alt="">
+      </a></div>
+
+    <div id="e719" style="position:absolute;left:497;top:394;width:144;height:101;"><a href="elmoped-bil.html">
+        <img class="bld" src="cre/jahaha57.jpg" width="144" height="101" border="0" alt="">
+      </a></div>
+
+    <div id="e721" style="position:absolute;left:365;top:252;width:72;height:62;"><a>
+        <img class="bld" src="cre/jahaha59.jpg" width="72" height="62" border="0" alt="">
+      </a></div>
+  </div>
+
+
+
+  <div id="myresult" class="img-zoom-result">
+
+
+  </div>
+  <div id="overframe" class="overframe"></div>
+
+
+  <script>
+    // Initiate zoom effect:
+    $(document).ready(function () {
+      $('.bld').mouseenter(function () {
+        console.log(this);
+        imageZoom(this, 'myresult');
+
+      });
+
+      $("#popup").click(function () {
+        $(".popup").show();
+        $("body").addClass('noscroll');
+        $("#root").addClass('popped');
+      });
+      $("#nl-link").click(function () {
+        $(".nl").show();
+        $(".fr").hide();
+        $(".eng").hide();
+      });
+      $("#eng-link").click(function () {
+        $(".eng").show();
+        $(".fr").hide();
+        $(".nl").hide();
+      });
+      $("#fr-link").click(function () {
+        $(".eng").hide();
+        $(".fr").show();
+        $(".nl").hide();
+      });
+
+
+      $(".close").click(function () {
+        $(".popup").hide();
+        $("body").removeClass('noscroll');
+        $("#root").removeClass('popped');
+      });
+      $("#21-link").click(function () {
+        $(".y21").show();
+        $(".y22").hide();
+        $(".y20").hide();
+        $(".y19").hide();
+      });
+      $("#22-link").click(function () {
+        $(".y22").show();
+        $(".y21").hide();
+        $(".y20").hide();
+        $(".y19").hide();
+      });
+      $("#20-link").click(function () {
+        $(".y20").show();
+        $(".y21").hide();
+        $(".y22").hide();
+        $(".y19").hide();
+      });
+      $("#19-link").click(function () {
+        $(".y19").show();
+        $(".y21").hide();
+        $(".y22").hide();
+        $(".y20").hide();
+      });
+
+    });
+
+
+  </script>
+</body>
+
+</html>
